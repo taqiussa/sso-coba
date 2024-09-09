@@ -1,0 +1,18 @@
+services:
+  react-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sso:latest
+    container_name: "sso"
+    restart: always
+    ports:
+      - "2024:5000" 
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./:/app 
+      - /app/node_modules  
+      - ./build:/app/build 
+    environment:
+      - NODE_ENV=development
