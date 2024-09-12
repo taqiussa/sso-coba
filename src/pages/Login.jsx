@@ -43,15 +43,16 @@ export default function Login() {
                                         <title>FF UNISSULA - LOGIN</title>
                                 </Helmet>
                         </HelmetProvider>
-                        <div className="grid lg:grid-cols-2 grow h-screen bg-bg-farmasi bg-top lg:bg-none">
-                                <div className="flex flex-col lg:hidden justify-center ">
+                        <div className="lg:grid lg:grid-cols-2 h-screen bg-bg-farmasi bg-top lg:bg-none">
+                                <div className="flex lg:hidden justify-center items-center">
                                         <img className="w-44" src="/logo-unggul.png" />
-                                        <h3 className="text-2xl text-center font-semibold text-black">
-                                                FAKULTAS FARMASI
-                                        </h3>
                                 </div>
                                 <div className="flex justify-center items-center lg:p-15 order-2 lg:order-1">
                                         <div className="card max-w-[380px] w-full">
+                                                <h3 className="text-2xl lg:hidden text-center font-semibold pt-7 text-slate-700">
+                                                        FAKULTAS FARMASI <br />
+                                                        UNISSULA
+                                                </h3>
                                                 <form onSubmit={submit} className="card-body flex flex-col gap-5 p-10" id="sign_in_form" method="get">
                                                         <div className="flex flex-col gap-1">
                                                                 <label className="form-label text-gray-900">
@@ -101,7 +102,7 @@ export default function Login() {
                                                                 }
                                                         </button>
                                                         <Link to="/" className="btn btn-dark flex justify-center grow" disabled={loading}>
-                                                                Cancel 
+                                                                Cancel
                                                         </Link>
                                                 </form>
                                         </div>
