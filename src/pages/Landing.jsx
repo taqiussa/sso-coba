@@ -99,7 +99,7 @@ export default function Landing() {
                                                         className="px-10 py-3 mt-2 text-sm text-center bg-white text-gray-800 rounded-full md:py-2 md:mt-5 md:ml-4"
 
                                                 >
-                                                        Login
+                                                        Sign In
                                                 </Link>
                                                 <a
                                                         className="cursor-pointer px-10 py-3 mt-2 text-sm text-center bg-yellow-500 text-white rounded-full md:py-2 md:mt-5 md:ml-4"
