@@ -1,15 +1,16 @@
 import axios from "axios";
 import { useState } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { Link } from "react-router-dom";
 
 export default function Login() {
         const [username, setUsername] = useState('');
         const [password, setPassword] = useState('');
         const [loading, setLoading] = useState(false);
-        const [showPassword, setShowPassword] = useState(false); 
+        const [showPassword, setShowPassword] = useState(false);
 
         const togglePasswordVisibility = () => {
-                setShowPassword(!showPassword); 
+                setShowPassword(!showPassword);
         };
 
         const submit = async (event) => {
@@ -42,8 +43,14 @@ export default function Login() {
                                         <title>FF UNISSULA - LOGIN</title>
                                 </Helmet>
                         </HelmetProvider>
-                        <div className="grid lg:grid-cols-2 grow h-screen">
-                                <div className="flex justify-center items-center p-8 lg:p-10 order-2 lg:order-1">
+                        <div className="grid lg:grid-cols-2 grow h-screen bg-bg-farmasi bg-top lg:bg-none">
+                                <div className="flex flex-col lg:hidden justify-center ">
+                                        <img className="w-44" src="/logo-unggul.png" />
+                                        <h3 className="text-2xl text-center font-semibold text-black">
+                                                FAKULTAS FARMASI
+                                        </h3>
+                                </div>
+                                <div className="flex justify-center items-center lg:p-15 order-2 lg:order-1">
                                         <div className="card max-w-[380px] w-full">
                                                 <form onSubmit={submit} className="card-body flex flex-col gap-5 p-10" id="sign_in_form" method="get">
                                                         <div className="flex flex-col gap-1">
@@ -93,10 +100,13 @@ export default function Login() {
                                                                         </div>
                                                                 }
                                                         </button>
+                                                        <Link to="/" className="btn btn-dark flex justify-center grow" disabled={loading}>
+                                                                Cancel 
+                                                        </Link>
                                                 </form>
                                         </div>
                                 </div>
-                                <div className="lg:rounded-xl lg:border lg:border-gray-200 lg:m-2 order-1 lg:order-2 lg:bg-cover bg-top bg-no-repeat bg-bg-farmasi">
+                                <div className="lg:rounded-xl lg:border lg:border-gray-200 lg:m-2 order-1 lg:order-2 lg:bg-cover bg-top bg-no-repeat bg-bg-farmasi hidden lg:block">
                                         <div className="flex flex-col p-2 lg:p-5 gap-2">
                                                 <div>
                                                         <img className="w-44" src="/logo-unggul.png" />
