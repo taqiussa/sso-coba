@@ -1,14 +1,16 @@
 import axios from "axios";
 import { useState } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
+        const [showPassword, setShowPassword] = useState(false);
+        const [loading, setLoading] = useState(false);
         const [username, setUsername] = useState('');
         const [password, setPassword] = useState('');
-        const [loading, setLoading] = useState(false);
-        const [showPassword, setShowPassword] = useState(false);
-
+        const [error, setError] = useState('');
+        const navigate = useNavigate(); // For redirection
+        
         const togglePasswordVisibility = () => {
                 setShowPassword(!showPassword);
         };
@@ -16,6 +18,7 @@ export default function Login() {
         const submit = async (event) => {
                 event.preventDefault();
                 setLoading(true);
+                setError('');
 
                 const formData = new FormData();
                 formData.append('username', username);
@@ -28,13 +31,26 @@ export default function Login() {
                                 }
                         });
 
-                        console.log(response.data); // Handle the response data
+                        if (response.data.success) {
+                                const { access_token, user } = response.data.data;
+
+                                // Store the token and user data in localStorage
+                                localStorage.setItem('access_token', access_token);
+                                localStorage.setItem('user', JSON.stringify(user));
+
+                                // Redirect to the dashboard after successful login
+                                navigate('/dashboard');
+                        } else {
+                                setError(response.data.message || 'Login failed. Please try again.');
+                        }
                 } catch (error) {
                         console.error("Error during login:", error.response || error);
+                        setError(error.response?.data?.message || 'An error occurred. Please try again.');
                 } finally {
                         setLoading(false);
                 }
         };
+
 
         return (
                 <>
@@ -72,7 +88,7 @@ export default function Login() {
                                                                         <label className="form-label text-gray-900">
                                                                                 Password
                                                                         </label>
-                                                                        <a className="text-2sm link shrink-0" >
+                                                                        <a className="text-2sm link shrink-0">
                                                                                 Forgot Password?
                                                                         </a>
                                                                 </div>

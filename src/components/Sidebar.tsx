@@ -1,5 +1,31 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 function Sidebar() {
-  return <div
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
+
+  const logout = async () => {
+    setLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Clear local storage
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('user');
+
+      // Navigate to login page
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Handle error (e.g., show an error message to the user)
+    } finally {
+      setLoading(false);
+    }
+  };
+
+return <div
   className="sidebar dark:bg-coal-600 bg-light border-r border-r-gray-200 dark:border-r-coal-100 fixed top-0 bottom-0 z-20 hidden lg:flex flex-col items-stretch shrink-0"
   data-drawer="true"
   data-drawer-class="drawer drawer-start top-0 bottom-0"
@@ -1664,19 +1690,24 @@ function Sidebar() {
             </span>
           </div>
         </div>
-        <div className="menu-item">
+        <div
+          className="menu-item"
+          data-menu-item-toggle="accordion"
+          data-menu-item-trigger="click"
+        >
           <div
-            className="menu-label gap-[10px] pl-[10px] pr-[10px] py-[6px] border border-transparent"
+            onClick={logout}
+            className="menu-link flex items-center grow cursor-pointer border border-transparent gap-[10px] pl-[10px] pr-[10px] py-[6px]"
             tabIndex={0}
           >
-            <span className="menu-icon items-start w-[20px] text-gray-500 dark:text-gray-400">
-              <i className="ki-filled ki-note-2 text-lg"></i>
+            <span className="menu-icon items-start text-gray-500 dark:text-gray-400 w-[20px]">
+              <i className="ki-filled ki-exit-right text-lg"></i>
             </span>
-            <span className="menu-title text-sm font-semibold text-gray-700">
-              Wizards
+            <span className="menu-title text-sm font-semibold text-gray-700 menu-item-active:text-primary menu-link-hover:!text-primary">
+              Sign Out
             </span>
-            <span className="menu-badge mr-[-10px]">
-              <span className="badge badge-xs">Soon</span>
+            <span className="menu-arrow text-gray-400 w-[20px] shrink-0 justify-end ml-1 mr-[-10px]">
+              <i className={`ki-filled ki-loading text-2xs ${loading ? 'inline-flex' : 'hidden'}`}></i>
             </span>
           </div>
         </div>
