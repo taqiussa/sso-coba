@@ -9,7 +9,7 @@ services:
     ports:
       - "2024:5000" 
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - "host.docker.internal:127.0.0.1"
     volumes:
       - ./:/app 
       - /app/node_modules  

@@ -1,7 +1,9 @@
 import axios from "axios";
-import { useState } from "react";
-import { Helmet, HelmetProvider } from "react-helmet-async";
+import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 export default function Login() {
         const [showPassword, setShowPassword] = useState(false);
@@ -10,7 +12,7 @@ export default function Login() {
         const [password, setPassword] = useState('');
         const [error, setError] = useState('');
         const navigate = useNavigate(); // For redirection
-        
+
         const togglePasswordVisibility = () => {
                 setShowPassword(!showPassword);
         };
@@ -28,14 +30,17 @@ export default function Login() {
                         const response = await axios.post('http://api.dnglab.id/sso/auth/login', formData, {
                                 headers: {
                                         'Content-Type': 'multipart/form-data',
-                                }
+                                },
                         });
 
                         if (response.data.success) {
                                 const { access_token, user } = response.data.data;
 
-                                // Store the token and user data in localStorage
+                                // Store access_token in localStorage and refresh_token in cookies
                                 localStorage.setItem('access_token', access_token);
+                                // Cookies.set('refresh_token', response.data.data.refresh_token, { httpOnly: true, sameSite: 'strict' });
+
+                                // Store user data in localStorage
                                 localStorage.setItem('user', JSON.stringify(user));
 
                                 // Redirect to the dashboard after successful login
@@ -50,6 +55,45 @@ export default function Login() {
                         setLoading(false);
                 }
         };
+
+        const isTokenExpired = (token) => {
+                const decoded = jwtDecode(token);
+                const currentTime = Date.now() / 1000; // Convert to seconds
+                return decoded.exp < currentTime;
+        };
+
+        useEffect(() => {
+                const checkAuth = async () => {
+                        const accessToken = localStorage.getItem('access_token');
+                        const refreshToken = Cookies.get('refresh_token');
+
+                        if (accessToken && !isTokenExpired(accessToken)) {
+                                // If the access token is valid, proceed to dashboard
+                                navigate('/dashboard');
+                        } else if (refreshToken) {
+                                // If the access token is expired or missing, try to refresh it using the refresh token
+                                try {
+                                        const refreshResponse = await axios.post('http://api.dnglab.id/sso/auth/gettoken', {}, {
+                                                headers: {
+                                                        'Authorization': `Bearer ${refreshToken}`,
+                                                },
+                                        });
+
+                                        if (refreshResponse.data.success) {
+                                                localStorage.setItem('access_token', refreshResponse.data.data.access_token);
+                                                navigate('/dashboard');
+                                        } else {
+                                                setError('Session expired. Please log in again.');
+                                        }
+                                } catch (error) {
+                                        console.error("Error refreshing token:", error.response || error);
+                                        setError('Session expired. Please log in again.');
+                                }
+                        }
+                };
+
+                checkAuth();
+        }, [navigate]);
 
 
         return (

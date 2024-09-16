@@ -6,24 +6,45 @@ import { useEffect } from 'react';
 import KTLayout from '../metronic/app/layouts/demo1.js';
 import SearchModal from "../components/SearchModal.tsx";
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
 
 export default function AuthLayout({ children }) {
 
         const navigate = useNavigate();
 
+        const isTokenExpired = (token) => {
+                const decoded = jwtDecode(token);
+                const currentTime = Date.now() / 1000; // Convert to seconds
+                return decoded.exp < currentTime;
+        };
+
         useEffect(() => {
                 const checkAuth = () => {
                         const token = localStorage.getItem('access_token');
-                        if (!token) {
-                                navigate('/login');
+                        const refreshToken = Cookies.get('refresh_token');
+
+                        // Check if access_token exists and is not expired
+                        if (!token || isTokenExpired(token)) {
+                                if (refreshToken) {
+                                        // Optionally handle refresh token logic here if necessary
+                                        navigate('/login'); // Or refresh the token
+                                } else {
+                                        navigate('/login'); // Redirect to login if no token
+                                }
                         }
                 };
 
                 checkAuth();
+
+                // Initialize KTComponent and KTLayout (assuming they are globally available)
                 KTComponent.init();
                 KTLayout.init();
+
+                // Set body classes for the layout
                 document.body.className = 'antialiased demo1 flex h-screen text-base text-gray-700 sidebar-fixed header-fixed bg-[#fefefe] dark:bg-coal-500';
 
+                // Cleanup on component unmount
                 return () => {
                         document.body.className = 'antialiased h-screen';
                 };
