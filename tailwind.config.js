@@ -20,6 +20,7 @@ export default {
 			backgroundImage: {
 				'bg-farmasi': "url('/bg-farmasi.jpg')",
 				'bg-login': "url('/bg-10.png')",
+				'hero': "url('/bg-1.png')",
 				'dark-bg-login': "url('/bg-10-dark.png')",
 			},
 			base: {

@@ -22,23 +22,23 @@ export default function Login() {
                 setLoading(true);
                 setError('');
 
-                const formData = new FormData();
-                formData.append('username', username);
-                formData.append('password', password);
-
                 try {
-                        const response = await axios.post('http://api.dnglab.id/sso/auth/login', formData, {
+                        const response = await axios.post('https://api.dnglab.id/sso/auth/login', {
+                                username, password
+                        }, {
                                 headers: {
-                                        'Content-Type': 'multipart/form-data',
+                                        'Content-Type': 'application/json',
                                 },
+                                withCredentials: true
                         });
 
                         if (response.data.success) {
-                                const { access_token, user } = response.data.data;
-
+                                const { access_token, refresh_token, user } = response.data.data;
+                                console.log(response.data.data)
                                 // Store access_token in localStorage and refresh_token in cookies
                                 localStorage.setItem('access_token', access_token);
-                                // Cookies.set('refresh_token', response.data.data.refresh_token, { httpOnly: true, sameSite: 'strict' });
+                                localStorage.setItem('refresh_token', refresh_token)
+                                // Cookies.set('refresh_token', response.data.data.refresh_token, { httpOnly: true, sameSite: 'none' });
 
                                 // Store user data in localStorage
                                 localStorage.setItem('user', JSON.stringify(user));

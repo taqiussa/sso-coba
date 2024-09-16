@@ -3,7 +3,6 @@ import './index.css'
 import Login from './pages/Login'
 import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
-// import Dashboard from './pages/Dashboard'
 
 function App() {
   return (

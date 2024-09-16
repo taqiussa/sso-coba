@@ -9,13 +9,13 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 
-export default function AuthLayout({ children }) {
+export default function MainLayout({ children }) {
 
         const navigate = useNavigate();
 
         const isTokenExpired = (token) => {
                 const decoded = jwtDecode(token);
-                const currentTime = Date.now() / 1000; // Convert to seconds
+                const currentTime = Date.now() / 1000;
                 return decoded.exp < currentTime;
         };
 
@@ -30,7 +30,7 @@ export default function AuthLayout({ children }) {
                                         // Optionally handle refresh token logic here if necessary
                                         navigate('/login'); // Or refresh the token
                                 } else {
-                                        navigate('/login'); // Redirect to login if no token
+                                        navigate('/login');
                                 }
                         }
                 };
@@ -57,12 +57,7 @@ export default function AuthLayout({ children }) {
                                 <div className="wrapper flex grow flex-col">
                                         <Header />
                                         <main className="grow content pt-5" id="content" role="content">
-                                                <div className="container-fixed" id="content_container">
-                                                        {children}
-                                                </div>
-                                                {/* <div className="container-fixed">
-                                                        {children}
-                                                </div> */}
+                                                {children}
                                         </main>
                                         <Footer />
                                 </div>
