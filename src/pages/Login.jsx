@@ -11,7 +11,7 @@ export default function Login() {
         const [username, setUsername] = useState('');
         const [password, setPassword] = useState('');
         const [error, setError] = useState('');
-        const navigate = useNavigate(); // For redirection
+        const navigate = useNavigate();
 
         const togglePasswordVisibility = () => {
                 setShowPassword(!showPassword);
@@ -33,17 +33,16 @@ export default function Login() {
                         });
 
                         if (response.data.success) {
-                                const { access_token, refresh_token, user } = response.data.data;
+                                const { access_token, user } = response.data.data;
                                 console.log(response.data.data)
-                                // Store access_token in localStorage and refresh_token in cookies
                                 localStorage.setItem('access_token', access_token);
-                                localStorage.setItem('refresh_token', refresh_token)
-                                // Cookies.set('refresh_token', response.data.data.refresh_token, { httpOnly: true, sameSite: 'none' });
+                                // Cookies.set('refresh_token', response.data.data.refresh_token, {
+                                //         httpOnly: true,
+                                //         sameSite: 'None',
+                                // });
 
-                                // Store user data in localStorage
                                 localStorage.setItem('user', JSON.stringify(user));
 
-                                // Redirect to the dashboard after successful login
                                 navigate('/dashboard');
                         } else {
                                 setError(response.data.message || 'Login failed. Please try again.');
@@ -58,7 +57,7 @@ export default function Login() {
 
         const isTokenExpired = (token) => {
                 const decoded = jwtDecode(token);
-                const currentTime = Date.now() / 1000; // Convert to seconds
+                const currentTime = Date.now() / 1000;
                 return decoded.exp < currentTime;
         };
 
@@ -68,10 +67,8 @@ export default function Login() {
                         const refreshToken = Cookies.get('refresh_token');
 
                         if (accessToken && !isTokenExpired(accessToken)) {
-                                // If the access token is valid, proceed to dashboard
                                 navigate('/dashboard');
                         } else if (refreshToken) {
-                                // If the access token is expired or missing, try to refresh it using the refresh token
                                 try {
                                         const refreshResponse = await axios.post('http://api.dnglab.id/sso/auth/gettoken', {}, {
                                                 headers: {

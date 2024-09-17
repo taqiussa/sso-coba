@@ -30,3 +30,21 @@ export async function generateToken() {
                 return null;
         }
 }
+
+export async function getData(url, token, params) {
+        try {
+                const response = await axios.get(`${apiUrl}/${url}`, {
+                        params
+                }, {
+                        headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json',
+                        },
+                });
+
+                return response;
+        } catch (error) {
+                console.error('Erro Get Data :', error);
+                return null;
+        }
+}
