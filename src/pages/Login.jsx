@@ -33,9 +33,10 @@ export default function Login() {
                         });
 
                         if (response.data.success) {
-                                const { access_token, user } = response.data.data;
+                                const { access_token, refresh_token, user } = response.data.data;
                                 console.log(response.data.data)
                                 localStorage.setItem('access_token', access_token);
+                                localStorage.setItem('refresh_token', refresh_token);
                                 // Cookies.set('refresh_token', response.data.data.refresh_token, {
                                 //         httpOnly: true,
                                 //         sameSite: 'None',

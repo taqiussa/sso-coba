@@ -1,11 +1,39 @@
 import axios from "axios"
 import { apiUrl } from "../config"
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+
+
+export function cekAuth() {
+        const navigate = useNavigate();
+
+        useEffect(() => {
+                const token = localStorage.getItem('access_token');
+
+                if (!token) {
+                        navigate('/login');
+                } 
+                // else {
+                //         if (cekToken(token)) {
+                //                 localStorage.removeItem('access_token');
+                //                 navigate('/login');
+                //         }
+                // }
+        }, [navigate]);
+
+        return null;
+}
 
 export function cekToken(token) {
-        const decoded = jwtDecode(token);
-        const currentTime = Date.now() / 1000; // Convert to seconds
-        return decoded.exp < currentTime;
+        try {
+                const decoded = jwtDecode(token);
+                const currentTime = Date.now() / 1000;
+                return decoded.exp < currentTime;
+        } catch (error) {
+                console.error("Invalid token", error);
+                return true;
+        }
 }
 
 export async function generateToken() {
@@ -18,10 +46,8 @@ export async function generateToken() {
                         },
                 });
 
-                // Assuming the new token comes from response.data.token
                 const newToken = response.data.token;
 
-                // Save the new token to localStorage or sessionStorage
                 localStorage.setItem('access_token', newToken);
 
                 return newToken;
@@ -33,7 +59,7 @@ export async function generateToken() {
 
 export async function getData(url, token, params) {
         try {
-                const response = await axios.get(`${apiUrl}/${url}`, {
+                const response = await axios.get(`${apiUrl}${url}`, {
                         params
                 }, {
                         headers: {
@@ -44,7 +70,7 @@ export async function getData(url, token, params) {
 
                 return response;
         } catch (error) {
-                console.error('Erro Get Data :', error);
+                console.error('Error Get Data :', error);
                 return null;
         }
 }

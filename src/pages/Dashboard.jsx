@@ -1,15 +1,14 @@
 import { useEffect } from "react";
 import MainLayout from "../layouts/MainLayout";
-import Cookies from 'js-cookie';
 import { getData } from "../functions/api";
 
 export default function Dashboard() {
         const auth = localStorage.getItem('user');
         const token = localStorage.getItem('acces_token');
 
-        // useEffect(() => {
-        //         getData('users', { id_user: auth.id_user }, token)
-        // }, [])
+        useEffect(() => {
+                getData('users', token, auth.id_user)
+        }, [])
 
         return (
                 <MainLayout>

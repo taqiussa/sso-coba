@@ -5,8 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import ResponsiveSidebar from './partials/ResponsiveSidebar.jsx';
 import Sidebar from './partials/Sidebar.jsx';
 import Header from '@/components/Header.jsx';
+import { cekAuth } from '@/functions/api/index.js';
+
 
 export default function MainLayout({ children }) {
+
+        cekAuth();
 
         const navigate = useNavigate();
 
