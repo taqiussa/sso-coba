@@ -8,6 +8,7 @@ export default function Sidebar() {
         const navigate = useNavigate();
 
         const [loading, setLoading] = useState(false);
+        
         const logout = async () => {
                 setLoading(true);
                 try {

@@ -5,21 +5,45 @@ import { useNavigate } from 'react-router-dom';
 import ResponsiveSidebar from './partials/ResponsiveSidebar.jsx';
 import Sidebar from './partials/Sidebar.jsx';
 import Header from '@/components/Header.jsx';
-import { cekAuth } from '@/functions/api/index.js';
+import { cekAuth, getData } from '@/functions/api/api.js';
 
 
 export default function MainLayout({ children }) {
-
-        cekAuth();
+        const user = localStorage.getItem('user');
 
         const navigate = useNavigate();
 
         const [open, setOpen] = useState(false);
+        const [dataUser, setDataUser] = useState([]);
 
         useEffect(() => {
 
                 KTComponent.init();
                 KTLayout.init();
+
+                const checkAuth = async () => {
+                        const isAuthenticated = await cekAuth();
+                        if (!isAuthenticated) {
+                                navigate('/login');
+                        } else {
+                                navigate('/dashboard');
+                        }
+                };
+
+
+                const userJson = localStorage.getItem('user');
+
+                if (userJson) {
+                        const user = JSON.parse(userJson);
+
+                        const response = getData('/users', { id_user: user.id_user });
+                        if (response && response.data) {
+                                setDataUser(response.data);
+                        }
+                }
+
+
+                checkAuth();
 
         }, [navigate]);
 
