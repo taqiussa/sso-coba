@@ -9,12 +9,19 @@ import { cekAuth, getData } from '@/functions/api/api.js';
 
 
 export default function MainLayout({ children }) {
-        const user = localStorage.getItem('user');
+        const user = JSON.parse(localStorage.getItem('user'));
 
         const navigate = useNavigate();
 
         const [open, setOpen] = useState(false);
         const [dataUser, setDataUser] = useState([]);
+
+        async function getDataUser() {
+                const response = await getData('/users', { id_user: user.id_user });
+                if (response && response.data) {
+                        setDataUser(response.data);
+                }
+        }
 
         useEffect(() => {
 
@@ -30,20 +37,13 @@ export default function MainLayout({ children }) {
                         }
                 };
 
+                checkAuth();
 
-                const userJson = localStorage.getItem('user');
-
-                if (userJson) {
-                        const user = JSON.parse(userJson);
-
-                        const response = getData('/users', { id_user: user.id_user });
-                        if (response && response.data) {
-                                setDataUser(response.data);
-                        }
+                if (user) {
+                        getDataUser();
                 }
 
 
-                checkAuth();
 
         }, [navigate]);
 

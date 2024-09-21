@@ -16,6 +16,7 @@ export default function Sidebar() {
 
                         // Clear session storage
                         localStorage.removeItem('access_token');
+                        localStorage.removeItem('refresh_token');
 
                         // Clear cookies (refresh token)
                         Cookies.remove('refresh_token', { path: '/' });

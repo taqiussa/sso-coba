@@ -1,15 +1,6 @@
-import { useEffect } from "react";
 import MainLayout from "../layouts/MainLayout";
-import { getData } from "../functions/api/api";
 
 export default function Dashboard() {
-        const auth = localStorage.getItem('user');
-        const token = localStorage.getItem('acces_token');
-
-        // useEffect(() => {
-        //         getData('users', token, auth.id_user)
-        // }, [])
-
         return (
                 <MainLayout>
                         <div className="bg-center bg-cover bg-no-repeat hero-bg border-b border-gray-300 mb-7">

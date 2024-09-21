@@ -1,17 +1,16 @@
-import axios from "axios"
-import { apiUrl } from "../config/config"
+import axios from "axios";
+import { apiLaravel } from "../config/config";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 
 
 export function cekAuth() {
-
         const accessToken = localStorage.getItem('access_token');
         const refreshToken = Cookies.get('refresh_token');
 
-        if (accessToken && !cekToken(accessToken)) {
+        if (accessToken && !isTokenExpired(accessToken)) {
                 return true;
-        } else if (refreshToken && !cekToken(refreshToken)) {
+        } else if (refreshToken && !isTokenExpired(refreshToken)) {
                 try {
                         const newAccessToken = generateToken();
                         if (newAccessToken) {
@@ -22,17 +21,17 @@ export function cekAuth() {
                         console.error("Error refreshing token:", error);
                 }
         }
-};
+        return false;
+}
 
-export function cekToken(token) {
+export function isTokenExpired(token) {
         if (!token) return true;
-
         try {
                 const decoded = jwtDecode(token);
                 const currentTime = Date.now() / 1000;
                 return decoded.exp < currentTime;
         } catch (error) {
-                console.error("Invalid token", error);
+                console.error("Error decoding token:", error);
                 return true;
         }
 }
@@ -42,7 +41,7 @@ export async function generateToken() {
         if (!refreshToken) return null;
 
         try {
-                const response = await axios.get(`${apiUrl}/auth/gettoken`, {
+                const response = await axios.get(`${apiLaravel}/auth/gettoken`, {
                         headers: {
                                 'Authorization': `Bearer ${refreshToken}`,
                                 'Content-Type': 'application/json',
@@ -57,10 +56,17 @@ export async function generateToken() {
 
 export async function getData(url, params = {}) {
         const token = localStorage.getItem('access_token');
-        if (!token) return null;
+        if (!token) {
+                const regenerate = generateToken();
+                if (regenerate) {
+                        localStorage.setItem('access_token', regenerate.data.access_token);
+                } else {
+                        return null;
+                }
+        }
 
         try {
-                const response = await axios.get(`${apiUrl}${url}`, {
+                const response = await axios.get(`${apiLaravel}${url}`, {
                         params,
                         headers: {
                                 'Authorization': `Bearer ${token}`,

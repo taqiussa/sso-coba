@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { apiUrl } from "@/functions/config/config";
+import { apiLaravel } from "@/functions/config/config";
 import { cekAuth } from "@/functions/api/api";
 
 export default function Login() {
@@ -18,13 +18,22 @@ export default function Login() {
                 setShowPassword(!showPassword);
         };
 
+        async function checkIfAuthenticated() {
+                const isAuthenticated = await cekAuth();
+                if (!isAuthenticated) {
+                        navigate('/login');
+                } else {
+                        navigate('/dashboard');
+                }
+        }
+
         const submit = async (event) => {
                 event.preventDefault();
                 setLoading(true);
                 setError('');
 
                 try {
-                        const response = await axios.post(`${apiUrl}sso/auth/login`, {
+                        const response = await axios.post(`${apiLaravel}/sso/auth/login`, {
                                 username, password
                         }, {
                                 headers: {
@@ -58,16 +67,7 @@ export default function Login() {
         };
 
         useEffect(() => {
-                const checkAuth = async () => {
-                        const isAuthenticated = await cekAuth();
-                        if (!isAuthenticated) {
-                                navigate('/login');
-                        } else {
-                                navigate('/dashboard');
-                        }
-                };
-
-                checkAuth();
+                checkIfAuthenticated();
         }, []);
 
 
