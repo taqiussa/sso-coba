@@ -1,10 +1,9 @@
 import axios from "axios";
-import Cookies from 'js-cookie';
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { apiLaravel } from "@/functions/config/config";
 import { cekAuth } from "@/functions/api/api";
+import { apiUrl } from "@/functions/config/config";
 
 export default function Login() {
         const [showPassword, setShowPassword] = useState(false);
@@ -33,24 +32,27 @@ export default function Login() {
                 setError('');
 
                 try {
-                        const response = await axios.post(`${apiLaravel}/sso/auth/login`, {
+                        const response = await axios.post(`${apiUrl}auth/login`, {
                                 username, password
                         }, {
                                 headers: {
                                         'Content-Type': 'application/json',
                                 },
-                                // withCredentials: true
+                                withCredentials: true,
+                                credentials: "include"
                         });
 
-                        if (response.data.success) {
-                                const { access_token, refresh_token, user } = response.data.data;
-                                localStorage.setItem('access_token', access_token);
-                                localStorage.setItem('refresh_token', refresh_token);
+                        console.log(response)
 
-                                Cookies.set('refresh_token', response.data.data.refresh_token, {
-                                        httpOnly: false,
-                                        sameSite: 'none',
-                                });
+                        if (response.data.success) {
+                                const { access_token, user } = response.data.data;
+                                localStorage.setItem('access_token', access_token);
+                                // localStorage.setItem('refresh_token', refresh_token);
+
+                                // Cookies.set('refresh_token', response.data.data.refresh_token, {
+                                //         httpOnly: false,
+                                //         sameSite: 'none',
+                                // });
 
                                 localStorage.setItem('user', JSON.stringify(user));
 

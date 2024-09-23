@@ -1,8 +1,7 @@
 import axios from "axios";
-import { apiLaravel } from "../config/config";
+import { apiUrl } from "../config/config";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
-
 
 export function cekAuth() {
         const accessToken = localStorage.getItem('access_token');
@@ -41,11 +40,11 @@ export async function generateToken() {
         if (!refreshToken) return null;
 
         try {
-                const response = await axios.get(`${apiLaravel}/auth/gettoken`, {
+                const response = await axios.get(`${apiUrl}/auth/gettoken`, {
                         headers: {
-                                'Authorization': `Bearer ${refreshToken}`,
                                 'Content-Type': 'application/json',
                         },
+                        withCredentials: true
                 });
                 return response.data.data.access_token;
         } catch (error) {
@@ -54,26 +53,57 @@ export async function generateToken() {
         }
 }
 
-export async function getData(url, params = {}) {
-        const token = localStorage.getItem('access_token');
-        if (!token) {
-                const regenerate = generateToken();
-                if (regenerate) {
-                        localStorage.setItem('access_token', regenerate.data.access_token);
-                } else {
-                        return null;
-                }
+export async function deleteData(url, json) {
+        const method = 'DELETE';
+        const response = fetchServer(method, url, json);
+        return response;
+}
+
+export async function updateData(url, json) {
+        const method = 'PUT';
+        const response = fetchServer(method, url, json);
+        return response;
+}
+
+export async function postData(url, json) {
+        const method = 'POST';
+        const response = fetchServer(method, url, json);
+        return response;
+}
+
+export async function getData(url, json) {
+        const method = 'GET';
+        const response = fetchServer(method, url, json);
+        return response;
+}
+
+export async function fetchServer(method, url, json = {}) {
+        var token = localStorage.getItem('access_token');
+        if (isTokenExpired(token)) {
+                generateToken();
+                token = localStorage.getItem('access_token');
         }
 
         try {
-                const response = await axios.get(`${apiLaravel}${url}`, {
-                        params,
+                let config = {
+                        method: method,
+                        maxBodyLength: Infinity,
+                        url: `${apiUrl}${url}`,
                         headers: {
                                 'Authorization': `Bearer ${token}`,
-                                'Content-Type': 'application/json',
+                                'Content-Type' : 'application/json',
                         },
-                });
-                return response;
+                        withCredentials: true,
+                        data: json
+                };
+
+                axios.request(config)
+                        .then((response) => {
+                                console.log(JSON.stringify(response.data));
+                        })
+                        .catch((error) => {
+                                console.log(error);
+                        });
         } catch (error) {
                 console.error('Error Get Data:', error);
                 return null;

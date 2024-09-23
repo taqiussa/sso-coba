@@ -17,7 +17,7 @@ export default function MainLayout({ children }) {
         const [dataUser, setDataUser] = useState([]);
 
         async function getDataUser() {
-                const response = await getData('/users', { id_user: user.id_user });
+                const response = await getData(`users/${user.id_user}`,{});
                 if (response && response.data) {
                         setDataUser(response.data);
                 }
