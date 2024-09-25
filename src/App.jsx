@@ -4,6 +4,7 @@ import Login from './pages/Login'
 import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
 import Home from './pages/Home'
+import { UserProvider } from './layouts/partials/UserContext'
 
 function App() {
   return (

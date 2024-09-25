@@ -2,8 +2,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { cekAuth } from "@/functions/api/api";
-import { apiUrl } from "@/functions/config/config";
+import { getData, isAuthenticated } from "@/functions/api/api";
+import { apiUrl } from "@/functions/config/env";
+// import { useUser } from "@/layouts/partials/UserContext";
 
 export default function Login() {
         const [showPassword, setShowPassword] = useState(false);
@@ -12,19 +13,20 @@ export default function Login() {
         const [password, setPassword] = useState('');
         const [error, setError] = useState('');
         const navigate = useNavigate();
+        // const { login } = useUser();
 
         const togglePasswordVisibility = () => {
                 setShowPassword(!showPassword);
         };
 
-        async function checkIfAuthenticated() {
-                const isAuthenticated = await cekAuth();
-                if (!isAuthenticated) {
+        const checkAuth = () => {
+                const loginUser = isAuthenticated();
+                if (!loginUser) {
                         navigate('/login');
                 } else {
                         navigate('/dashboard');
                 }
-        }
+        };
 
         const submit = async (event) => {
                 event.preventDefault();
@@ -42,19 +44,15 @@ export default function Login() {
                                 credentials: "include"
                         });
 
-                        console.log(response)
-
                         if (response.data.success) {
                                 const { access_token, user } = response.data.data;
                                 localStorage.setItem('access_token', access_token);
-                                // localStorage.setItem('refresh_token', refresh_token);
-
-                                // Cookies.set('refresh_token', response.data.data.refresh_token, {
-                                //         httpOnly: false,
-                                //         sameSite: 'none',
-                                // });
-
                                 localStorage.setItem('user', JSON.stringify(user));
+                                const loginData = await getData('users/' + user.id_user);
+                                sessionStorage.setItem('user_profile', JSON.stringify(loginData.data[0]));
+                                // if (loginData) {
+                                //         login(loginData.data[0]);
+                                // }
 
                                 navigate('/dashboard');
                         } else {
@@ -69,7 +67,8 @@ export default function Login() {
         };
 
         useEffect(() => {
-                checkIfAuthenticated();
+                
+                checkAuth();
         }, []);
 
 

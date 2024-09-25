@@ -1,31 +1,23 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Cookies from 'js-cookie';
-
 
 export default function Sidebar() {
         const navigate = useNavigate();
 
         const [loading, setLoading] = useState(false);
-        
+
         const logout = async () => {
                 setLoading(true);
                 try {
                         await new Promise(resolve => setTimeout(resolve, 1000));
 
-                        // Clear session storage
                         localStorage.removeItem('access_token');
-                        localStorage.removeItem('refresh_token');
+                        sessionStorage.removeItem('user_profile');
 
-                        // Clear cookies (refresh token)
-                        Cookies.remove('refresh_token', { path: '/' });
-
-                        // Navigate to the login page
                         navigate('/login');
                 } catch (error) {
                         console.error('Logout failed:', error);
-                        // Optionally handle errors (e.g., show an error message)
                 } finally {
                         setLoading(false);
                 }

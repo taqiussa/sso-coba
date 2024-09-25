@@ -1,26 +1,10 @@
 import axios from "axios";
-import { apiUrl } from "../config/config";
 import { jwtDecode } from "jwt-decode";
-import Cookies from "js-cookie";
+import { apiUrl } from "../config/env";
 
-export function cekAuth() {
-        const accessToken = localStorage.getItem('access_token');
-        const refreshToken = Cookies.get('refresh_token');
-
-        if (accessToken && !isTokenExpired(accessToken)) {
-                return true;
-        } else if (refreshToken && !isTokenExpired(refreshToken)) {
-                try {
-                        const newAccessToken = generateToken();
-                        if (newAccessToken) {
-                                localStorage.setItem('access_token', newAccessToken);
-                                return true;
-                        }
-                } catch (error) {
-                        console.error("Error refreshing token:", error);
-                }
-        }
-        return false;
+export function isAuthenticated() {
+        const user = sessionStorage.getItem('user_profile');
+        return !!user;
 }
 
 export function isTokenExpired(token) {
@@ -36,9 +20,6 @@ export function isTokenExpired(token) {
 }
 
 export async function generateToken() {
-        const refreshToken = Cookies.get('refresh_token');
-        if (!refreshToken) return null;
-
         try {
                 const response = await axios.get(`${apiUrl}/auth/gettoken`, {
                         headers: {
@@ -53,59 +34,59 @@ export async function generateToken() {
         }
 }
 
-export async function deleteData(url, json) {
+export function deleteData(url, json) {
         const method = 'DELETE';
         const response = fetchServer(method, url, json);
         return response;
 }
 
-export async function updateData(url, json) {
+export function updateData(url, json) {
         const method = 'PUT';
         const response = fetchServer(method, url, json);
         return response;
 }
 
-export async function postData(url, json) {
+export function postData(url, json) {
         const method = 'POST';
         const response = fetchServer(method, url, json);
         return response;
 }
 
-export async function getData(url, json) {
+export function getData(url, json) {
         const method = 'GET';
         const response = fetchServer(method, url, json);
         return response;
 }
 
 export async function fetchServer(method, url, json = {}) {
-        var token = localStorage.getItem('access_token');
+        let token = localStorage.getItem('access_token');
+
         if (isTokenExpired(token)) {
-                generateToken();
-                token = localStorage.getItem('access_token');
+                token = await generateToken();
+                if (token) {
+                        localStorage.setItem('access_token', token);
+                } else {
+                        throw new Error('Failed to generate new token');
+                }
         }
 
         try {
-                let config = {
-                        method: method,
+                const config = {
+                        method,
                         maxBodyLength: Infinity,
                         url: `${apiUrl}${url}`,
                         headers: {
-                                'Authorization': `Bearer ${token}`,
-                                'Content-Type' : 'application/json',
+                                Authorization: `Bearer ${token}`,
+                                'Content-Type': 'application/json',
                         },
                         withCredentials: true,
-                        data: json
+                        data: json,
                 };
 
-                axios.request(config)
-                        .then((response) => {
-                                console.log(JSON.stringify(response.data));
-                        })
-                        .catch((error) => {
-                                console.log(error);
-                        });
+                const response = await axios.request(config);
+                return response.data;
         } catch (error) {
-                console.error('Error Get Data:', error);
-                return null;
+                console.error('Error in fetchServer:', error);
+                throw error;
         }
 }
