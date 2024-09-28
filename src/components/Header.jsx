@@ -225,11 +225,11 @@ function Header({ setOpen, logout, user, loading }) {
               <div className="flex items-center justify-between px-5 py-1.5 gap-1.5">
                 <div className="flex items-center gap-2">
                   {
-                    user.avatar ?
+                    user?.avatar ?
                       <img
                         alt="foto"
                         className="size-9 rounded-full border-2 border-success"
-                        src={user.avatar}
+                        src={user?.avatar}
                       />
                       :
                       <img
@@ -240,7 +240,7 @@ function Header({ setOpen, logout, user, loading }) {
                   }
                   <div className="flex flex-col gap-1.5">
                     <span className="text-sm text-gray-800 font-semibold leading-none">
-                      {user.nama_lengkap || 'No Data Available'}
+                      {user?.nama_lengkap || 'No Data Available'}
                     </span>
                   </div>
                 </div>

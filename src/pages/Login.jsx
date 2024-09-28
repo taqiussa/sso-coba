@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { getData, isAuthenticated } from "@/functions/api/api";
 import { apiUrl } from "@/functions/config/env";
-// import { useUser } from "@/layouts/partials/UserContext";
+import { useUser } from "@/functions/provider/UserProvider";
 
 export default function Login() {
         const [showPassword, setShowPassword] = useState(false);
@@ -12,20 +12,11 @@ export default function Login() {
         const [username, setUsername] = useState('');
         const [password, setPassword] = useState('');
         const [error, setError] = useState('');
+        const { user, login } = useUser(); 
         const navigate = useNavigate();
-        // const { login } = useUser();
 
         const togglePasswordVisibility = () => {
                 setShowPassword(!showPassword);
-        };
-
-        const checkAuth = () => {
-                const loginUser = isAuthenticated();
-                if (!loginUser) {
-                        navigate('/login');
-                } else {
-                        navigate('/dashboard');
-                }
         };
 
         const submit = async (event) => {
@@ -49,11 +40,8 @@ export default function Login() {
                                 localStorage.setItem('access_token', access_token);
                                 localStorage.setItem('user', JSON.stringify(user));
                                 const loginData = await getData('users/' + user.id_user);
-                                sessionStorage.setItem('user_profile', JSON.stringify(loginData.data[0]));
-                                // if (loginData) {
-                                //         login(loginData.data[0]);
-                                // }
-
+                                // sessionStorage.setItem('user_profile', JSON.stringify(loginData.data[0]));
+                                login(loginData.data[0])
                                 navigate('/dashboard');
                         } else {
                                 setError(response.data.message || 'Login failed. Please try again.');
@@ -66,11 +54,12 @@ export default function Login() {
                 }
         };
 
-        useEffect(() => {
-                
-                checkAuth();
-        }, []);
 
+        useEffect(() => {
+                if (user) {
+                        navigate('/dashboard');
+                }
+        }, [user, navigate]);
 
         return (
                 <>
