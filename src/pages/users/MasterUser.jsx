@@ -1,5 +1,5 @@
 import { getData } from '@/functions/api/api';
-import axios from 'axios';
+import PageTitle from '@/layouts/partials/PageTitle';
 import React, { useEffect, useState } from 'react'
 
 export default function MasterUser() {
@@ -24,26 +24,7 @@ export default function MasterUser() {
                                 "filter": "",
                         });
 
-                        // const response = await getData('users/', json);
-
-                        let config = {
-                                method: 'get',
-                                maxBodyLength: Infinity,
-                                url: 'https://api.dnglab.id/sso/users/',
-                                headers: {
-                                        'Content-Type': 'application/json',
-                                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhc3RybyIsImlkX3VzZXIiOiJiNWMyOTM5NS1lNDdlLTQwZjQtOGE5Ni1jNDU0ZGJiNzYzMTMiLCJleHAiOjE3Mjc1OTY3ODl9.AFLIrWxV6dQzlKzs3_KNQZZ9yKVafmx_Wj5xLNfV5og'
-                                },
-                                data: data
-                        };
-
-                        axios.request(config)
-                                .then((response) => {
-                                        console.log(JSON.stringify(response.data));
-                                })
-                                .catch((error) => {
-                                        console.log(error);
-                                });
+                        const response = await getData(`users/${json}`);
 
                         console.log(response);
 
@@ -77,6 +58,7 @@ export default function MasterUser() {
 
         return (
                 <>
+                        <PageTitle title='Master User' />
                         <div>
                                 {/* <table className="table-auto">
                                         <thead>

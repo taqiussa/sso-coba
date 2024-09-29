@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Helmet, HelmetProvider } from "react-helmet-async";
-import { getData, isAuthenticated } from "@/functions/api/api";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { getData } from "@/functions/api/api";
 import { apiUrl } from "@/functions/config/env";
 import { useUser } from "@/functions/provider/UserProvider";
+import PageTitle from "@/layouts/partials/PageTitle";
 
 export default function Login() {
         const [showPassword, setShowPassword] = useState(false);
@@ -14,6 +14,7 @@ export default function Login() {
         const [error, setError] = useState('');
         const { user, login } = useUser();
         const navigate = useNavigate();
+        const location = useLocation();
 
         const togglePasswordVisibility = () => {
                 setShowPassword(!showPassword);
@@ -57,17 +58,14 @@ export default function Login() {
 
         useEffect(() => {
                 if (user) {
-                        navigate('/dashboard');
+                        const from = location.state?.from?.pathname || '/dashboard';
+                        navigate(from, { replace: true });
                 }
         }, [user, navigate]);
 
         return (
                 <>
-                        <HelmetProvider>
-                                <Helmet>
-                                        <title>FF UNISSULA - LOGIN</title>
-                                </Helmet>
-                        </HelmetProvider>
+                        <PageTitle title="LOGIN" />
                         <div className="lg:grid lg:grid-cols-2 h-screen bg-bg-farmasi bg-top lg:bg-none">
                                 <div className="flex lg:hidden justify-center items-center">
                                         <img className="w-44" src="/logo-unggul.png" />

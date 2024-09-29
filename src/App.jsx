@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard'
 import PrivateRoute from './functions/provider/PrivateRoute'
 import { UserProvider } from './functions/provider/UserProvider'
 import MasterUser from './pages/users/MasterUser'
+import UserProfile from './pages/user/UserProfile'
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route element={<PrivateRoute />}>
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/master_user' element={<MasterUser />} />
+            <Route path='/user-profile' element={<UserProfile />} />
           </Route>
         </Routes>
       </BrowserRouter>

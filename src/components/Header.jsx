@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Header({ setOpen, logout, user, loading }) {
   return <header
     className="header w-full fixed top-0 z-10 left-0 right-0 bg-[#fefefe] dark:bg-coal-500"
@@ -224,20 +226,20 @@ function Header({ setOpen, logout, user, loading }) {
             <div className="menu-dropdown menu-default light:border-gray-300 w-full max-w-[250px]">
               <div className="flex items-center justify-between px-5 py-1.5 gap-1.5">
                 <div className="flex items-center gap-2">
-                  {
+                  {/* {
                     user?.avatar ?
                       <img
                         alt="foto"
                         className="size-9 rounded-full border-2 border-success"
                         src={user?.avatar}
                       />
-                      :
-                      <img
-                        alt=""
-                        className="size-9 rounded-full border-2 border-success"
-                        src="/media/avatars/300-2.png"
-                      />
-                  }
+                      : */}
+                  <img
+                    alt=""
+                    className="size-9 rounded-full border-2 border-success"
+                    src="/media/avatars/300-2.png"
+                  />
+                  {/* } */}
                   <div className="flex flex-col gap-1.5">
                     <span className="text-sm text-gray-800 font-semibold leading-none">
                       {user?.nama_lengkap || 'No Data Available'}
@@ -248,26 +250,15 @@ function Header({ setOpen, logout, user, loading }) {
               <div className="menu-separator"></div>
               <div className="flex flex-col">
                 <div className="menu-item">
-                  <a
+                  <Link
                     className="menu-link"
-                    href="html/demo1/public-profile/profiles/default.html"
-                  >
-                    <span className="menu-icon">
-                      <i className="ki-filled ki-badge"></i>
-                    </span>
-                    <span className="menu-title">Public Profile</span>
-                  </a>
-                </div>
-                <div className="menu-item">
-                  <a
-                    className="menu-link"
-                    href="html/demo1/account/home/user-profile.html"
+                    to='/user-profile'
                   >
                     <span className="menu-icon">
                       <i className="ki-filled ki-profile-circle"></i>
                     </span>
                     <span className="menu-title">My Profile</span>
-                  </a>
+                  </Link>
                 </div>
                 <div
                   className="menu-item"
