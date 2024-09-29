@@ -35,7 +35,7 @@ export default function UserProfile() {
                                                                                         Click to remove or revert
                                                                                 </span>
                                                                                 <div className="image-input-placeholder rounded-full border-2 border-success image-input-empty:border-gray-300" style={{ backgroundImage: 'url(assets/media/avatars/blank.png)' }}>
-                                                                                        <div className="image-input-preview rounded-full" style={{ backgroundImage: 'url(assets/media/avatars/300-2.png)' }}>
+                                                                                        <div className="image-input-preview rounded-full" style={{ backgroundImage: 'url(media/avatars/300-2.png)' }}>
                                                                                         </div>
                                                                                         <div className="flex items-center justify-center cursor-pointer h-5 left-0 right-0 bottom-0 bg-dark-clarity absolute">
                                                                                                 <svg className="fill-light opacity-80" height={12} viewBox="0 0 14 12" width={14} xmlns="http://www.w3.org/2000/svg">

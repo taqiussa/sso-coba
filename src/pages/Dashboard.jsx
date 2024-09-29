@@ -1,10 +1,8 @@
-import { avatarUrl } from "@/functions/config/env";
-import MainLayout from "../layouts/MainLayout";
+import { useUser } from "@/functions/provider/UserProvider";
 import PageTitle from "@/layouts/partials/PageTitle";
 
 export default function Dashboard() {
-        const user = JSON.parse(sessionStorage.getItem('user_profile'));
-
+        const { user } = useUser();
         return (
                 <>
                         <PageTitle title="DASHBOARD" />
@@ -44,6 +42,50 @@ export default function Dashboard() {
                                                                         </a>
                                                                 </div>
                                                         </div>
+                                                </div>
+                                        </div>
+                                </div>
+                        </div>
+                        <div className="container-fixed ">
+                                <div className="grid grid-cols-2 md:flex gap-5 w-full lg:gap-7.5">
+                                        <div className="card">
+                                                <h3 className="font-bold text-lg p-2 border-b border-gray-300 text-center">
+                                                        Title Aplikasi
+                                                </h3>
+                                                <div className="card-body">
+                                                        <img src="/logo.png" className="size-32" />
+                                                </div>
+                                        </div>
+                                        <div className="card">
+                                                <h3 className="font-bold text-lg p-2 border-b border-gray-300 text-center">
+                                                        Title Aplikasi
+                                                </h3>
+                                                <div className="card-body">
+                                                        <img src="/logo.png" className="size-32" />
+                                                </div>
+                                        </div>
+                                        <div className="card">
+                                                <h3 className="font-bold text-lg p-2 border-b border-gray-300 text-center">
+                                                        Title Aplikasi
+                                                </h3>
+                                                <div className="card-body">
+                                                        <img src="/logo.png" className="size-32" />
+                                                </div>
+                                        </div>
+                                        <div className="card">
+                                                <h3 className="font-bold text-lg p-2 border-b border-gray-300 text-center">
+                                                        Title Aplikasi
+                                                </h3>
+                                                <div className="card-body">
+                                                        <img src="/logo.png" className="size-32" />
+                                                </div>
+                                        </div>
+                                        <div className="card">
+                                                <h3 className="font-bold text-lg p-2 border-b border-gray-300 text-center">
+                                                        Title Aplikasi
+                                                </h3>
+                                                <div className="card-body">
+                                                        <img src="/logo.png" className="size-32" />
                                                 </div>
                                         </div>
                                 </div>

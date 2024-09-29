@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/functions/provider/UserProvider";
 
-export default function Sidebar({ menus = {} }) {
+export default function Sidebar({ menus = {}, setOpen, open }) {
         const navigate = useNavigate();
         const [loading, setLoading] = useState(false);
         const { logout } = useUser();
@@ -22,9 +22,18 @@ export default function Sidebar({ menus = {} }) {
 
         return (
                 <div className='dark:bg-coal-600 px-4 h-full bg-light border-r border-r-gray-200 dark:border-r-coal-100'>
-                        <Link className="dark:hidden" to="/home">
+                        {/* <Link className="dark:hidden" to="/home">
                                 <img className="default-logo min-h-[22px] max-w-none" src="/media/app/default-logo.svg" />
-                        </Link>
+                        </Link> */}
+                        <div className="text-slate-600 font-bold inline-flex gap-3">
+                                <div>
+                                        <img className=" h-12" src="/logo.png" />
+                                </div>
+                                <div className="flex flex-col items-center justify-center">
+                                        <div>Fakultas Farmasi</div>
+                                        <div>UNISSULA</div>
+                                </div>
+                        </div>
                         <div
                                 className="menu flex flex-col grow gap-0.5 pt-10"
                                 data-menu="true"
@@ -35,6 +44,7 @@ export default function Sidebar({ menus = {} }) {
                                         data-menu-item-toggle="accordion"
                                         data-menu-item-trigger="click">
                                         <Link to='/dashboard'
+                                                onClick={() => setOpen(false)}
                                                 className="menu-link flex items-center grow cursor-pointer border border-transparent gap-[10px] pl-[10px] pr-[10px] py-[6px]"
                                                 tabIndex={0}>
                                                 <span className="menu-icon items-start text-gray-500 dark:text-gray-400 w-[20px]">
@@ -69,6 +79,7 @@ export default function Sidebar({ menus = {} }) {
                                                         {items.map((item, index) => (
                                                                 <div key={index} className="menu-item">
                                                                         <Link
+                                                                                onClick={() => setOpen(false)}
                                                                                 to={`/${item.modul_path}`}
                                                                                 className="menu-link gap-[14px] pl-[10px] pr-[10px] py-[8px] border border-transparent items-center grow menu-item-active:bg-secondary-active dark:menu-item-active:bg-coal-300 dark:menu-item-active:border-gray-100 menu-item-active:rounded-lg hover:bg-secondary-active dark:hover:bg-coal-300 dark:hover:border-gray-100 hover:rounded-lg"
                                                                                 tabIndex={0}>

@@ -49,11 +49,11 @@ export default function MainLayout({ children }) {
         return (
                 <>
                         <div className="block lg:hidden">
-                                <ResponsiveSidebar open={open} setOpen={setOpen} />
+                                <ResponsiveSidebar open={open} setOpen={setOpen} menus={menus}/>
                         </div>
                         <div className="flex">
                                 <aside className="z-20 hidden h-full py-10 overflow-y-auto bg-white lg:fixed lg:block lg:w-80">
-                                        <Sidebar menus={menus} />
+                                        <Sidebar menus={menus} setOpen={setOpen} open={open} />
                                 </aside>
                                 <div className="flex-1 w-full overflow-y-auto lg:ml-80">
                                         {

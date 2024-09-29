@@ -14,9 +14,9 @@ function Header({ setOpen, logout, user, loading }) {
       id="header_container"
     >
       <div className="flex gap-1 lg:hidden items-center -ml-1">
-        <a className="shrink-0" href="html/demo1.html">
-          <img className="max-h-[25px] w-full" src="/media/app/mini-logo.svg" />
-        </a>
+        <span className="shrink-0">
+          <img className="h-7" src="/logo.png" />
+        </span>
         <div className="flex items-center">
           <button
             onClick={() => setOpen(true)}
@@ -260,7 +260,7 @@ function Header({ setOpen, logout, user, loading }) {
                     <span className="menu-title">My Profile</span>
                   </Link>
                 </div>
-                <div
+                {/* <div
                   className="menu-item"
                   data-menu-item-offset="-50px, 0"
                   data-menu-item-placement="left-start"
@@ -371,16 +371,16 @@ function Header({ setOpen, logout, user, loading }) {
                       </a>
                     </div>
                   </div>
-                </div>
-                <div className="menu-item">
+                </div> */}
+                {/* <div className="menu-item">
                   <a className="menu-link" href="https://devs.keenthemes.com">
                     <span className="menu-icon">
                       <i className="ki-filled ki-message-programming"></i>
                     </span>
                     <span className="menu-title">Dev Forum</span>
                   </a>
-                </div>
-                <div
+                </div> */}
+                {/* <div
                   className="menu-item"
                   data-menu-item-offset="-10px, 0"
                   data-menu-item-placement="left-start"
@@ -466,11 +466,11 @@ function Header({ setOpen, logout, user, loading }) {
                       </a>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
               <div className="menu-separator"></div>
               <div className="flex flex-col">
-                <div className="menu-item mb-0.5">
+                {/* <div className="menu-item mb-0.5">
                   <div className="menu-link">
                     <span className="menu-icon">
                       <i className="ki-filled ki-moon"></i>
@@ -486,7 +486,7 @@ function Header({ setOpen, logout, user, loading }) {
                       />
                     </label>
                   </div>
-                </div>
+                </div> */}
                 <div onClick={logout} className="menu-item px-4 py-1.5">
                   <span
                     className="btn btn-sm btn-light justify-center"
