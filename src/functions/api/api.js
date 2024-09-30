@@ -1,6 +1,7 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { apiUrl } from "../config/env";
+import { showAlert } from "../alert/showAlert";
 
 export function isAuthenticated() {
         const user = sessionStorage.getItem('user_profile');
@@ -86,7 +87,8 @@ export async function fetchServer(method, url, json = {}) {
                 const response = await axios.request(config);
                 return response.data;
         } catch (error) {
-                console.error('Error in fetchServer:', error);
-                throw error;
+                showAlert('error','Gagal');
+                // console.error('Error in fetchServer:', error);
+                // throw error;
         }
 }

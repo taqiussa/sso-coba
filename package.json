@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
-  "proxy": "https://api.dnglab.id",
+  "proxy": "https://api.dnglab.id/sso/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -19,7 +19,9 @@
     "react-dom": "^18.3.1",
     "react-helmet-async": "^2.0.5",
     "react-router-dom": "^6.26.1",
-    "react-table": "^7.8.0"
+    "react-table": "^7.8.0",
+    "sweetalert2": "^11.14.1",
+    "sweetalert2-react-content": "^5.0.7"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.6",
