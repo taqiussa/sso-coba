@@ -1,22 +1,48 @@
 import { showAlert } from '@/functions/alert/showAlert';
-import { postData } from '@/functions/api/api';
+import { getData, postData, updateData } from '@/functions/api/api';
 import PageTitle from '@/layouts/partials/PageTitle'
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 
-
-export default function CreateUser() {
+export default function EditUser() {
+        const { id_user } = useParams();
+        const navigate = useNavigate();
         const [loading, setLoading] = useState(false);
         const [data, setData] = useState({
                 name: '',
                 phone: '',
                 email: '',
+                idPerson: '',
                 username: '',
                 userType: '',
                 avatar: null
         });
 
         const [previewImage, setPreviewImage] = useState('media/avatars/blank.png');
+
+        const fetchData = async () => {
+                if (!id_user) return;
+
+                try {
+                        const response = await getData(`users/${id_user}`);
+
+                        if (response?.success) {
+                                setData({
+                                        name: response.data[0].nama_lengkap ?? '',
+                                        phone: response.data[0].no_hp ?? '',
+                                        email: response.data[0].email ?? '',
+                                        username: response.data[0].username ?? '',
+                                        userType: response.data[0].jenis_user ?? '',
+                                        idPerson: response.data[0].id_person ?? '',
+                                        avatar: response.data[0].avatar ?? ''
+                                })
+                        } else {
+                                console.error("Failed to fetch menu: ", response.message);
+                        }
+                } catch (error) {
+                        console.error("Error fetching menu: ", error);
+                }
+        };
 
         const handleChange = (e) => {
                 const { name, value, type, files } = e.target;
@@ -44,31 +70,39 @@ export default function CreateUser() {
                         // Prepare the data for submission
                         const payload = {
                                 Nama_Lengkap: data.name,
-                                Id_Person: '31afd140-3834-4ff1-a68c-d2457cf9879e',
+                                Id_Person: data.idPerson,
                                 Jenis_User: data.userType,
                                 No_Hp: data.phone,
-                                Password: '123123', // Consider securing this
                                 Username: data.username,
                                 Email: data.email,
                                 Avatar: data.avatar,
                         };
 
                         // Make the POST request
-                        const response = await postData('users/', payload);
+                        const response = await updateData(`users/${id_user}`, payload);
 
                         if (response.success) {
-                                showAlert('success', 'Success!', 'User created successfully.'); 
+                                showAlert('success', 'Success!', 'User edited successfully.');
+                                navigate('/master_user');
                         } else {
-                                showAlert('error', 'Error!', response.message || 'Failed to create user.'); 
+                                showAlert('error', 'Error!', response.message || 'Failed to create user.');
                         }
                 } catch (error) {
                         console.error("Error submitting data:", error);
                         showAlert('error', 'Error!', 'An unexpected error occurred. Please try again.');
                 } finally {
-                        setLoading(false); 
+                        setLoading(false);
                 }
         };
 
+        useEffect(() => {
+                setLoading(true)
+                fetchData();
+                setLoading(false);
+        }, [])
+        if (loading) {
+                return (<di>Loading....</di>)
+        }
         return (
                 <>
                         <PageTitle title='Tambah User' />
@@ -86,7 +120,7 @@ export default function CreateUser() {
                                         <div className="card pb-2.5">
                                                 <div className="card-header" id="basic_settings">
                                                         <h3 className="card-title">
-                                                                Tambah User
+                                                                Edit User
                                                         </h3>
                                                 </div>
                                                 <div className="card-body grid gap-5">
@@ -139,6 +173,15 @@ export default function CreateUser() {
                                                                         </option>
                                                                         <option value='Mahasiswa'>
                                                                                 Mahasiswa
+                                                                        </option>
+                                                                        <option value='Perseptor'>
+                                                                                Perseptor
+                                                                        </option>
+                                                                        <option value='Tenaga Pendidik'>
+                                                                                Tenaga Pendidik
+                                                                        </option>
+                                                                        <option value='Orang Tua'>
+                                                                                Orang Tua
                                                                         </option>
                                                                 </select>
                                                         </div>

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import { getData } from '@/functions/api/api';
+import { deleteData, getData } from '@/functions/api/api';
 import PageTitle from '@/layouts/partials/PageTitle';
 import { Link } from 'react-router-dom';
+import { showAlert } from '@/functions/alert/showAlert';
 
 export default function MasterUser() {
         const [dataTable, setDataTable] = useState([]);
@@ -19,6 +20,23 @@ export default function MasterUser() {
                 setData({
                         ...data,
                         [e.target.name]: e.target.value,
+                });
+        };
+
+        const handleDelete = async (id_user) => {
+                showAlert({
+                        icon: 'warning',
+                        title: 'Are you sure?',
+                        text: 'This action will delete the user.',
+                        confirm: true,
+                        onConfirm: async () => {
+                                try {
+                                        await deleteData(`users/${id_user}`);
+                                        fetchData();
+                                } catch (error) {
+                                        showAlert('error', 'Error!', 'Failed to delete user.');
+                                }
+                        },
                 });
         };
 
@@ -64,11 +82,13 @@ export default function MasterUser() {
                 },
                 {
                         name: 'Edit',
-                        cell: row => <button className="btn btn-sm btn-warning">Edit</button>,
+                        cell: row => <Link to={`/edit-user/${row.id_user}`} className="btn btn-sm btn-warning">Edit</Link>,
                 },
                 {
                         name: 'Hapus',
-                        cell: row => <button className="btn btn-sm btn-danger">Hapus</button>,
+                        cell: row => <button
+                                className="btn btn-sm btn-danger"
+                                onClick={() => handleDelete(row.id_user)}>Hapus</button>,
                 },
         ];
 
