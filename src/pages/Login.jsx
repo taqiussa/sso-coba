@@ -117,7 +117,7 @@ export default function Login() {
                                                                 Sign In {
                                                                         loading &&
                                                                         <div className={`${loading ? 'inline-flex' : 'hidden'}`}>
-                                                                                <i className="ki-filled ki-notification-circle animate-spin"></i>
+                                                                                <i class="ki-filled ki-arrows-circle animate-spin"></i>
                                                                         </div>
                                                                 }
                                                         </button>

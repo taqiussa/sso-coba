@@ -47,9 +47,9 @@ export function updateData(url, json) {
         return response;
 }
 
-export function postData(url, json) {
+export function postData(url, json, useFormData = false) {
         const method = 'POST';
-        const response = fetchServer(method, url, json);
+        const response = fetchServer(method, url, json, useFormData);
         return response;
 }
 
@@ -59,7 +59,7 @@ export function getData(url, json) {
         return response;
 }
 
-export async function fetchServer(method, url, json = {}) {
+export async function fetchServer(method, url, json = {}, useFormData = false) {
         let token = localStorage.getItem('access_token');
 
         if (isTokenExpired(token)) {
@@ -78,17 +78,25 @@ export async function fetchServer(method, url, json = {}) {
                         url: `${apiUrl}${url}`,
                         headers: {
                                 Authorization: `Bearer ${token}`,
-                                'Content-Type': 'application/json',
+                                'Content-Type': useFormData ? 'multipart/form-data' : 'application/json',
                         },
                         withCredentials: true,
-                        data: json,
+                        data: useFormData ? createFormData(json) : json,
                 };
 
                 const response = await axios.request(config);
                 return response.data;
         } catch (error) {
-                showAlert('error','Gagal');
+                showAlert('error', 'Gagal');
                 // console.error('Error in fetchServer:', error);
                 // throw error;
         }
+}
+
+function createFormData(json) {
+        const formData = new FormData();
+        Object.keys(json).forEach(key => {
+                formData.append(key, json[key]);
+        });
+        return formData;
 }

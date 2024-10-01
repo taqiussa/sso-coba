@@ -107,9 +107,9 @@ export default function MasterUser() {
                                                 </div>
                                         </div>
                                         <div className="flex items-center gap-2.5">
-                                                <a className="btn btn-sm btn-light" href="#">
+                                                {/* <a className="btn btn-sm btn-light" href="#">
                                                         Import Data
-                                                </a>
+                                                </a> */}
                                                 <Link className="btn btn-sm btn-primary" to="/create-user">
                                                         Tambah User
                                                 </Link>
@@ -139,15 +139,35 @@ export default function MasterUser() {
                                                 <div className="card-body">
                                                         <DataTable
                                                                 columns={columns}
-                                                                data={dataTable}
+                                                                data={dataTable ?? []}
                                                                 progressPending={isLoading}
+                                                                progressComponent={
+                                                                        <div className='flex flex-col items-center justify-center gap-3'>
+                                                                                <i class="ki-filled ki-arrows-circle animate-spin text-4xl"></i>
+                                                                                Memuat Data . . .
+                                                                        </div>
+
+                                                                }
                                                                 pagination
                                                                 paginationServer
                                                                 paginationTotalRows={totalData}
                                                                 paginationRowsPerPageOptions={[10, 25, 50, 100]}
                                                                 onChangeRowsPerPage={(newLimit) => setData({ ...data, limit: newLimit })}
                                                                 onChangePage={(page) => setData({ ...data, offset: page - 1 })}
+                                                                noDataComponent={null}
                                                         />
+                                                        {
+                                                                !dataTable &&
+                                                                <div className="flex justify-center my-7">
+                                                                        <button
+                                                                                className="btn btn-secondary"
+                                                                                onClick={() => setData({ ...data, offset: 0 })}
+                                                                                disabled={data.offset === 0}
+                                                                        >
+                                                                                Refresh Data
+                                                                        </button>
+                                                                </div>
+                                                        }
                                                 </div>
                                         </div>
                                 </div>

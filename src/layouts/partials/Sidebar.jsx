@@ -109,7 +109,7 @@ export default function Sidebar({ menus = {}, setOpen, open }) {
                                                 </span>
                                                 <span className="menu-arrow text-gray-400 w-[20px] shrink-0 justify-end ml-1 mr-[-10px]">
                                                         <div className={`${loading ? 'inline-flex' : 'hidden'}`}>
-                                                                <i className="ki-filled ki-notification-circle animate-spin"></i>
+                                                        <i class="ki-filled ki-arrows-circle animate-spin"></i>
                                                         </div>
                                                 </span>
                                         </div>
