@@ -81,7 +81,7 @@ export async function fetchServer(method, url, json = {}, useFormData = false) {
                                 'Content-Type': useFormData ? 'multipart/form-data' : 'application/json',
                         },
                         withCredentials: true,
-                        data: useFormData ? createFormData(json) : json,
+                        data: json,
                 };
 
                 const response = await axios.request(config);
@@ -93,7 +93,7 @@ export async function fetchServer(method, url, json = {}, useFormData = false) {
         }
 }
 
-function createFormData(json) {
+export function createFormData(json) {
         const formData = new FormData();
         Object.keys(json).forEach(key => {
                 formData.append(key, json[key]);

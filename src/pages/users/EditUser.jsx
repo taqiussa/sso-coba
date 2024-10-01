@@ -46,7 +46,7 @@ export default function EditUser() {
 
         const handleChange = (e) => {
                 const { name, value, type, files } = e.target;
-                if (type == 'file') {
+                if (type === 'file') {
                         if (files && files[0]) {
                                 setData({
                                         ...data,
@@ -79,7 +79,7 @@ export default function EditUser() {
                         };
 
                         // Make the POST request
-                        const response = await updateData(`users/${id_user}`, payload);
+                        const response = await updateData(`users/${id_user}`, payload, true);
 
                         if (response.success) {
                                 showAlert('success', 'Success!', 'User edited successfully.');

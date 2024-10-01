@@ -1,18 +1,19 @@
 import { showAlert } from '@/functions/alert/showAlert';
-import { postData } from '@/functions/api/api';
+import { createFormData, postData } from '@/functions/api/api';
 import PageTitle from '@/layouts/partials/PageTitle'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-
 export default function CreateUser() {
         const [loading, setLoading] = useState(false);
         const [data, setData] = useState({
-                name: '',
-                phone: '',
+                nama_lengkap: '',
+                no_hp: '',
                 email: '',
                 username: '',
-                userType: '',
+                jenis_user: '',
+                password: 12345678,
+                id_person: '31afd140-3834-4ff1-a68c-d2457cf9879e',
                 avatar: null
         });
 
@@ -20,7 +21,7 @@ export default function CreateUser() {
 
         const handleChange = (e) => {
                 const { name, value, type, files } = e.target;
-                if (type == 'file') {
+                if (type === 'file') {
                         if (files && files[0]) {
                                 setData({
                                         ...data,
@@ -39,33 +40,21 @@ export default function CreateUser() {
         };
 
         const handleSubmit = async () => {
-                setLoading(true); // Set loading to true at the start
+                setLoading(true);
                 try {
-                        // Prepare the data for submission
-                        const payload = {
-                                Nama_Lengkap: data.name,
-                                Id_Person: '31afd140-3834-4ff1-a68c-d2457cf9879e',
-                                Jenis_User: data.userType,
-                                No_Hp: data.phone,
-                                Password: '123123', // Consider securing this
-                                Username: data.username,
-                                Email: data.email,
-                                Avatar: data.avatar,
-                        };
 
-                        // Make the POST request
-                        const response = await postData('users/', payload);
+                        const response = await postData('users/', createFormData(data), true);
 
                         if (response.success) {
-                                showAlert('success', 'Success!', 'User created successfully.'); 
+                                showAlert('success', 'Success!', 'User created successfully.');
                         } else {
-                                showAlert('error', 'Error!', response.message || 'Failed to create user.'); 
+                                showAlert('error', 'Error!', response.message || 'Failed to create user.');
                         }
                 } catch (error) {
                         console.error("Error submitting data:", error);
                         showAlert('error', 'Error!', 'An unexpected error occurred. Please try again.');
                 } finally {
-                        setLoading(false); 
+                        setLoading(false);
                 }
         };
 
@@ -106,31 +95,31 @@ export default function CreateUser() {
                                                                 <label className="form-label max-w-56">
                                                                         Nama Lengkap
                                                                 </label>
-                                                                <input className="input" type="text" name="name" placeholder='Nama Lengkap' value={data.name} onChange={handleChange} />
+                                                                <input className="input" required type="text" name="nama_lengkap" placeholder='Nama Lengkap' value={data.nama_lengkap} onChange={handleChange} />
                                                         </div>
                                                         <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
                                                                 <label className="form-label max-w-56">
                                                                         No. HP
                                                                 </label>
-                                                                <input className="input" name="phone" placeholder="Nomor Handphone" type="text" value={data.phone} onChange={handleChange} />
+                                                                <input className="input" required name="no_hp" placeholder="Nomor Handphone" type="text" value={data.no_hp} onChange={handleChange} />
                                                         </div>
                                                         <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
                                                                 <label className="form-label max-w-56">
                                                                         Email
                                                                 </label>
-                                                                <input className="input" type="text" name="email" placeholder='Email' value={data.email} onChange={handleChange} />
+                                                                <input className="input" required type="text" name="email" placeholder='Email' value={data.email} onChange={handleChange} />
                                                         </div>
                                                         <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
                                                                 <label className="form-label max-w-56">
                                                                         Username
                                                                 </label>
-                                                                <input className="input" type="text" name="username" placeholder='Username' value={data.username} onChange={handleChange} />
+                                                                <input className="input" required type="text" name="username" placeholder='Username' value={data.username} onChange={handleChange} />
                                                         </div>
                                                         <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
                                                                 <label className="form-label max-w-56">
                                                                         Jenis User
                                                                 </label>
-                                                                <select className="select" name="userType" value={data.userType} onChange={handleChange}>
+                                                                <select required className="select" name="jenis_user" value={data.jenis_user} onChange={handleChange}>
                                                                         <option value=''>
                                                                                 Pilih Jenis User
                                                                         </option>
@@ -139,6 +128,15 @@ export default function CreateUser() {
                                                                         </option>
                                                                         <option value='Mahasiswa'>
                                                                                 Mahasiswa
+                                                                        </option>
+                                                                        <option value='Perseptor'>
+                                                                                Perseptor
+                                                                        </option>
+                                                                        <option value='Tenaga Pendidik'>
+                                                                                Tenaga Pendidik
+                                                                        </option>
+                                                                        <option value='Orang Tua'>
+                                                                                Orang Tua
                                                                         </option>
                                                                 </select>
                                                         </div>

@@ -1,3 +1,4 @@
+import { avatarUrl } from "@/functions/config/env";
 import { useUser } from "@/functions/provider/UserProvider";
 import PageTitle from "@/layouts/partials/PageTitle";
 
@@ -9,8 +10,7 @@ export default function Dashboard() {
                         <div className="bg-center bg-cover bg-no-repeat hero-bg border-b border-gray-300 mb-7">
                                 <div className="container-fixed">
                                         <div className="flex flex-col items-center gap-2 lg:gap-3.5 py-4 lg:pt-5 lg:pb-10">
-                                                {/* <img className="rounded-full border-3 border-success size-[100px] shrink-0" src={user?.avatar ? `${avatarUrl}${user?.avatar}` : 'default.png'} /> */}
-                                                <img className="rounded-full border-3 border-success size-[100px] shrink-0" src='/media/avatars/300-2.png' />
+                                                <img className="rounded-full border-3 border-success size-[100px] shrink-0" src={user?.avatar ? `${avatarUrl}${user?.avatar}` : 'default.png'} />
                                                 <div className="flex flex-col justify-center items-center gap-1.5">
                                                         <div className="text-lg leading-5 flex gap-2 font-semibold text-gray-900">
                                                                 {user?.nama_lengkap}

@@ -81,6 +81,10 @@ export default function MasterUser() {
                         sortable: true,
                 },
                 {
+                        name: 'Avatar',
+                        selector: row => row.avatar,
+                },
+                {
                         name: 'Edit',
                         cell: row => <Link to={`/edit-user/${row.id_user}`} className="btn btn-sm btn-warning">Edit</Link>,
                 },
