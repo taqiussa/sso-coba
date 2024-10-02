@@ -12,14 +12,14 @@ const MySwal = withReactContent(Swal);
  * @param {function} onConfirm - The function to call if confirmation is accepted (e.g., for deletion).
  * @param {object} options - Additional SweetAlert2 options for customization.
  */
-export const showAlert = ({
+export const showAlert = (
         icon = 'success',
         title = 'Berhasil',
         text = 'Berhasil Simpan Data',
         confirm = false,
         onConfirm = () => { },
         options = {},
-} = {}) => {
+) => {
         if (confirm) {
                 MySwal.fire({
                         icon,

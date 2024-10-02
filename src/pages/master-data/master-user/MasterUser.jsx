@@ -15,6 +15,7 @@ export default function MasterUser() {
         });
         const [totalData, setTotalData] = useState(0);
         const [isLoading, setIsLoading] = useState(false);
+        const [debouncedFilter, setDebouncedFilter] = useState(data.filter);
 
         const handleChange = (e) => {
                 setData({
@@ -41,8 +42,18 @@ export default function MasterUser() {
         };
 
         useEffect(() => {
+                const timer = setTimeout(() => {
+                        setDebouncedFilter(data.filter);
+                }, 500);
+
+                return () => {
+                        clearTimeout(timer);
+                };
+        }, [data.filter]);
+
+        useEffect(() => {
                 fetchData();
-        }, [data.limit, data.offset, data.filter, data.order]);
+        }, [data.limit, data.offset, data.order, debouncedFilter]);
 
         const fetchData = async () => {
                 setIsLoading(true);
@@ -79,6 +90,10 @@ export default function MasterUser() {
                         name: 'Username',
                         selector: row => row.username,
                         sortable: true,
+                },
+                {
+                        name: 'Kontak',
+                        selector: row => row.no_hp,
                 },
                 {
                         name: 'Avatar',
@@ -162,14 +177,19 @@ export default function MasterUser() {
                                                         />
                                                         {
                                                                 !dataTable &&
-                                                                <div className="flex justify-center my-7">
-                                                                        <button
-                                                                                className="btn btn-secondary"
-                                                                                onClick={() => setData({ ...data, offset: 0 })}
-                                                                                disabled={data.offset === 0}
-                                                                        >
-                                                                                Refresh Data
-                                                                        </button>
+                                                                <div className="flex flex-col items-center justify-center my-7">
+                                                                        <div className='text-slate-400'>
+                                                                                No Data Available.
+                                                                        </div>
+                                                                        <div>
+                                                                                <button
+                                                                                        className="btn btn-secondary"
+                                                                                        onClick={() => setData({ ...data, offset: 0 })}
+                                                                                        disabled={data.offset === 0}
+                                                                                >
+                                                                                        Refresh Data
+                                                                                </button>
+                                                                        </div>
                                                                 </div>
                                                         }
                                                 </div>

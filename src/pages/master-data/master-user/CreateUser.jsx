@@ -1,3 +1,5 @@
+import InputText from '@/components/InputText';
+import JenisUser from '@/components/JenisUser';
 import { showAlert } from '@/functions/alert/showAlert';
 import { postData } from '@/functions/api/api';
 import PageTitle from '@/layouts/partials/PageTitle'
@@ -39,16 +41,20 @@ export default function CreateUser() {
                 }
         };
 
-        const handleSubmit = async () => {
+        const handleSubmit = async (e) => {
+                e.preventDefault();
                 setLoading(true);
                 try {
-
                         const response = await postData('users/', data);
-
-                        if (response.success) {
+                        console.log(response.success);
+                        if (response.success === true) {
+                                console.log(response.message);
                                 showAlert('success', 'Success!', 'User created successfully.');
                         } else {
-                                showAlert('error', 'Error!', response.message || 'Failed to create user.');
+                                console.log(response.data);
+                                showAlert('error', 'Error!', Object.values(response.data)
+                                        .map(message => `- ${message}`)
+                                        .join('\n'));
                         }
                 } catch (error) {
                         console.error("Error submitting data:", error);
@@ -78,83 +84,72 @@ export default function CreateUser() {
                                                                 Tambah User
                                                         </h3>
                                                 </div>
-                                                <div className="card-body grid gap-5">
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Photo
-                                                                </label>
-                                                                <div className="flex items-center justify-between flex-wrap grow gap-2.5">
-                                                                        <span className="text-2sm font-medium text-gray-600">
-                                                                                150x150px JPEG, PNG Image
-                                                                        </span>
-                                                                        <input type='file' name='avatar' onChange={handleChange} />
-                                                                        <img src={data.avatar ? previewImage : '/media/avatars/blank.png'} className='size-16 image-input-placeholder rounded-full border-2 border-success image-input-empty:border-gray-300' />
+                                                <form onSubmit={handleSubmit}>
+                                                        <div className="card-body grid gap-5">
+                                                                <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
+                                                                        <label className="form-label max-w-56">
+                                                                                Photo
+                                                                        </label>
+                                                                        <div className="flex items-center justify-between flex-wrap grow gap-2.5">
+                                                                                <span className="text-2sm font-medium text-gray-600">
+                                                                                        150x150px JPEG, PNG Image
+                                                                                </span>
+                                                                                <input type='file' name='avatar' onChange={handleChange} />
+                                                                                <img src={data.avatar ? previewImage : '/media/avatars/blank.png'} className='size-16 image-input-placeholder rounded-full border-2 border-success image-input-empty:border-gray-300' />
+                                                                        </div>
+                                                                </div>
+                                                                <InputText
+                                                                        label='Nama Lengkap'
+                                                                        name='nama_lengkap'
+                                                                        value={data.nama_lengkap}
+                                                                        onChange={handleChange}
+                                                                        required={true}
+                                                                />
+                                                                <InputText
+                                                                        label='No. Hp'
+                                                                        name='no_hp'
+                                                                        type='number'
+                                                                        value={data.no_hp}
+                                                                        onChange={handleChange}
+                                                                        required={true}
+                                                                />
+                                                                <InputText
+                                                                        label='Email'
+                                                                        name='email'
+                                                                        type='email'
+                                                                        value={data.email}
+                                                                        onChange={handleChange}
+                                                                        required={true}
+                                                                />
+                                                                <InputText
+                                                                        label='Username'
+                                                                        name='username'
+                                                                        value={data.username}
+                                                                        onChange={handleChange}
+                                                                        required={true}
+                                                                />
+                                                                <JenisUser
+                                                                        name='jenis_user'
+                                                                        value={data.jenis_user}
+                                                                        onChange={handleChange}
+                                                                        required={true}
+                                                                />
+                                                                <div className="flex justify-end">
+                                                                        <button className="btn btn-primary" type='submit'>
+                                                                                Simpan
+                                                                                {
+                                                                                        loading &&
+                                                                                        <div className={`${loading ? 'inline-flex' : 'hidden'}`}>
+                                                                                                <i class="ki-filled ki-arrows-circle animate-spin"></i>
+                                                                                        </div>
+                                                                                }
+                                                                        </button>
                                                                 </div>
                                                         </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Nama Lengkap
-                                                                </label>
-                                                                <input className="input" required type="text" name="nama_lengkap" placeholder='Nama Lengkap' value={data.nama_lengkap} onChange={handleChange} />
-                                                        </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        No. HP
-                                                                </label>
-                                                                <input className="input" required name="no_hp" placeholder="Nomor Handphone" type="text" value={data.no_hp} onChange={handleChange} />
-                                                        </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Email
-                                                                </label>
-                                                                <input className="input" required type="text" name="email" placeholder='Email' value={data.email} onChange={handleChange} />
-                                                        </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Username
-                                                                </label>
-                                                                <input className="input" required type="text" name="username" placeholder='Username' value={data.username} onChange={handleChange} />
-                                                        </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Jenis User
-                                                                </label>
-                                                                <select required className="select" name="jenis_user" value={data.jenis_user} onChange={handleChange}>
-                                                                        <option value=''>
-                                                                                Pilih Jenis User
-                                                                        </option>
-                                                                        <option value='Dosen'>
-                                                                                Dosen
-                                                                        </option>
-                                                                        <option value='Mahasiswa'>
-                                                                                Mahasiswa
-                                                                        </option>
-                                                                        <option value='Perseptor'>
-                                                                                Perseptor
-                                                                        </option>
-                                                                        <option value='Tenaga Pendidik'>
-                                                                                Tenaga Pendidik
-                                                                        </option>
-                                                                        <option value='Orang Tua'>
-                                                                                Orang Tua
-                                                                        </option>
-                                                                </select>
-                                                        </div>
-                                                        <div className="flex justify-end">
-                                                                <button className="btn btn-primary" onClick={handleSubmit}>
-                                                                        Simpan
-                                                                        {
-                                                                                loading &&
-                                                                                <div className={`${loading ? 'inline-flex' : 'hidden'}`}>
-                                                                                        <i class="ki-filled ki-arrows-circle animate-spin"></i>
-                                                                                </div>
-                                                                        }
-                                                                </button>
-                                                        </div>
-                                                </div>
+                                                </form>
                                         </div>
                                 </div>
-                        </div>
+                        </div >
                 </>
         )
 }
