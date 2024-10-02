@@ -1,5 +1,5 @@
 import { showAlert } from '@/functions/alert/showAlert';
-import { createFormData, postData } from '@/functions/api/api';
+import { postData } from '@/functions/api/api';
 import PageTitle from '@/layouts/partials/PageTitle'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -12,7 +12,7 @@ export default function CreateUser() {
                 email: '',
                 username: '',
                 jenis_user: '',
-                password: 12345678,
+                password: '12345678',
                 id_person: '31afd140-3834-4ff1-a68c-d2457cf9879e',
                 avatar: null
         });
@@ -43,7 +43,7 @@ export default function CreateUser() {
                 setLoading(true);
                 try {
 
-                        const response = await postData('users/', createFormData(data), true);
+                        const response = await postData('users/', data);
 
                         if (response.success) {
                                 showAlert('success', 'Success!', 'User created successfully.');

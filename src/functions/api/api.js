@@ -47,9 +47,9 @@ export function updateData(url, json) {
         return response;
 }
 
-export function postData(url, json, useFormData = false) {
+export function postData(url, json) {
         const method = 'POST';
-        const response = fetchServer(method, url, json, useFormData);
+        const response = fetchServer(method, url, json);
         return response;
 }
 
@@ -59,7 +59,7 @@ export function getData(url, json) {
         return response;
 }
 
-export async function fetchServer(method, url, json = {}, useFormData = false) {
+export async function fetchServer(method, url, json = {}) {
         let token = localStorage.getItem('access_token');
 
         if (isTokenExpired(token)) {
@@ -78,7 +78,7 @@ export async function fetchServer(method, url, json = {}, useFormData = false) {
                         url: `${apiUrl}${url}`,
                         headers: {
                                 Authorization: `Bearer ${token}`,
-                                'Content-Type': useFormData ? 'multipart/form-data' : 'application/json',
+                                'Content-Type': method == 'GET' ? 'application/json' : 'multipart/form-data',
                         },
                         withCredentials: true,
                         data: json,
@@ -88,11 +88,10 @@ export async function fetchServer(method, url, json = {}, useFormData = false) {
                 return response.data;
         } catch (error) {
                 showAlert('error', 'Gagal');
-                // console.error('Error in fetchServer:', error);
-                // throw error;
         }
 }
 
+//function cadangan jika dibutuhkan jangan dihapus
 export function createFormData(json) {
         const formData = new FormData();
         Object.keys(json).forEach(key => {
