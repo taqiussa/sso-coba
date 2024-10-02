@@ -5,10 +5,10 @@ import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
 import PrivateRoute from './functions/provider/PrivateRoute'
 import { UserProvider } from './functions/provider/UserProvider'
-import MasterUser from './pages/users/MasterUser'
+import MasterUser from './pages/master-data/master-user/MasterUser'
 import UserProfile from './pages/user/UserProfile'
-import CreateUser from './pages/users/CreateUser'
-import EditUser from './pages/users/EditUser'
+import CreateUser from './pages/master-data/master-user/CreateUser'
+import EditUser from './pages/master-data/master-user/EditUser'
 
 function App() {
   return (
