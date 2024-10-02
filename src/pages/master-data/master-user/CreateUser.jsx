@@ -46,19 +46,27 @@ export default function CreateUser() {
                 setLoading(true);
                 try {
                         const response = await postData('users/', data);
-                        console.log(response.success);
                         if (response.success === true) {
-                                console.log(response.message);
-                                showAlert('success', 'Success!', 'User created successfully.');
+                                showAlert({
+                                        icon: 'success',
+                                        title: 'Success!',
+                                        text: 'User created successfully.'
+                                });
                         } else {
-                                console.log(response.data);
-                                showAlert('error', 'Error!', Object.values(response.data)
-                                        .map(message => `- ${message}`)
-                                        .join('\n'));
+                                showAlert({
+                                        icon: 'error',
+                                        title: 'Error!',
+                                        text: Object.values(response.data)
+                                                .map(message => `- ${message}`)
+                                                .join('\n')
+                                });
                         }
                 } catch (error) {
-                        console.error("Error submitting data:", error);
-                        showAlert('error', 'Error!', 'An unexpected error occurred. Please try again.');
+                        showAlert({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'An unexpected error occurred. Please try again.'
+                        });
                 } finally {
                         setLoading(false);
                 }

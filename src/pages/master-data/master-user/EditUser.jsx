@@ -1,48 +1,27 @@
+import InputText from '@/components/InputText';
+import JenisUser from '@/components/JenisUser';
+import Loading from '@/components/Loading';
 import { showAlert } from '@/functions/alert/showAlert';
-import { getData, postData, updateData } from '@/functions/api/api';
+import { getData, updateData } from '@/functions/api/api';
+import { avatarUrl } from '@/functions/config/env';
 import PageTitle from '@/layouts/partials/PageTitle'
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 export default function EditUser() {
         const { id_user } = useParams();
-        const navigate = useNavigate();
         const [loading, setLoading] = useState(false);
         const [data, setData] = useState({
-                name: '',
-                phone: '',
+                nama_lengkap: '',
+                no_hp: '',
                 email: '',
-                idPerson: '',
                 username: '',
-                userType: '',
+                jenis_user: '',
+                id_person: '31afd140-3834-4ff1-a68c-d2457cf9879e',
                 avatar: null
         });
 
         const [previewImage, setPreviewImage] = useState('media/avatars/blank.png');
-
-        const fetchData = async () => {
-                if (!id_user) return;
-
-                try {
-                        const response = await getData(`users/${id_user}`);
-
-                        if (response?.success) {
-                                setData({
-                                        name: response.data[0].nama_lengkap ?? '',
-                                        phone: response.data[0].no_hp ?? '',
-                                        email: response.data[0].email ?? '',
-                                        username: response.data[0].username ?? '',
-                                        userType: response.data[0].jenis_user ?? '',
-                                        idPerson: response.data[0].id_person ?? '',
-                                        avatar: response.data[0].avatar ?? ''
-                                })
-                        } else {
-                                console.error("Failed to fetch menu: ", response.message);
-                        }
-                } catch (error) {
-                        console.error("Error fetching menu: ", error);
-                }
-        };
 
         const handleChange = (e) => {
                 const { name, value, type, files } = e.target;
@@ -64,48 +43,79 @@ export default function EditUser() {
                 }
         };
 
-        const handleSubmit = async () => {
-                setLoading(true); // Set loading to true at the start
+        const handleSubmit = async (e) => {
+                e.preventDefault();
+                setLoading(true);
                 try {
-                        // Prepare the data for submission
-                        const payload = {
-                                Nama_Lengkap: data.name,
-                                Id_Person: data.idPerson,
-                                Jenis_User: data.userType,
-                                No_Hp: data.phone,
-                                Username: data.username,
-                                Email: data.email,
-                                Avatar: data.avatar,
-                        };
-
-                        // Make the POST request
-                        const response = await updateData(`users/${id_user}`, payload, true);
-
-                        if (response.success) {
-                                showAlert('success', 'Success!', 'User edited successfully.');
-                                navigate('/master_user');
+                        const response = await updateData(`users/${id_user}`, data);
+                        if (response.success === true) {
+                                showAlert({
+                                        icon: 'success',
+                                        title: 'Success!',
+                                        text: 'User edited successfully.'
+                                });
                         } else {
-                                showAlert('error', 'Error!', response.message || 'Failed to create user.');
+                                showAlert({
+                                        icon: 'error',
+                                        title: 'Error!',
+                                        text: Object.values(response.data)
+                                                .map(message => `- ${message}`)
+                                                .join('\n')
+                                });
                         }
                 } catch (error) {
                         console.error("Error submitting data:", error);
-                        showAlert('error', 'Error!', 'An unexpected error occurred. Please try again.');
+                        showAlert({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'An unexpected error occurred. Please try again.'
+                        });
+                } finally {
+                        setLoading(false);
+                }
+        };
+
+        const fetchData = async () => {
+                if (!id_user) return;
+
+                try {
+                        setLoading(true);
+                        const response = await getData(`users/${id_user}`);
+
+                        if (response?.success) {
+                                if (response.data[0].avatar !== null || response.data[0].avatar !== '') {
+                                        setPreviewImage(`${avatarUrl}${response.data[0].avatar}`)
+                                }
+                                setData({
+                                        nama_lengkap: response.data[0].nama_lengkap ?? '',
+                                        no_hp: response.data[0].no_hp ?? '',
+                                        email: response.data[0].email ?? '',
+                                        username: response.data[0].username ?? '',
+                                        jenis_user: response.data[0].jenis_user ?? '',
+                                        id_person: response.data[0].id_person ?? '',
+                                        avatar: response.data[0].avatar ?? ''
+                                });
+                        } else {
+                                console.error("Failed to fetch menu: ", response.message);
+                        }
+                } catch (error) {
+                        console.error("Error fetching menu: ", error);
                 } finally {
                         setLoading(false);
                 }
         };
 
         useEffect(() => {
-                setLoading(true)
                 fetchData();
-                setLoading(false);
-        }, [])
+        }, []);
+
         if (loading) {
-                return (<di>Loading....</di>)
+                return <Loading />
         }
+
         return (
                 <>
-                        <PageTitle title='Tambah User' />
+                        <PageTitle title='Edit User' />
                         <h1 className="text-xl font-semibold leading-none text-gray-900 mb-3">
                                 Master User
                         </h1>
@@ -123,83 +133,76 @@ export default function EditUser() {
                                                                 Edit User
                                                         </h3>
                                                 </div>
-                                                <div className="card-body grid gap-5">
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Photo
-                                                                </label>
-                                                                <div className="flex items-center justify-between flex-wrap grow gap-2.5">
-                                                                        <span className="text-2sm font-medium text-gray-600">
-                                                                                150x150px JPEG, PNG Image
-                                                                        </span>
-                                                                        <input type='file' name='avatar' onChange={handleChange} />
-                                                                        <img src={data.avatar ? previewImage : '/media/avatars/blank.png'} className='size-16 image-input-placeholder rounded-full border-2 border-success image-input-empty:border-gray-300' />
+                                                <form onSubmit={handleSubmit}>
+                                                        <div className="card-body grid gap-5">
+                                                                <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
+                                                                        <label className="form-label max-w-56">
+                                                                                Photo
+                                                                        </label>
+                                                                        <div className="flex items-center justify-between flex-wrap grow gap-2.5">
+                                                                                <span className="text-2sm font-medium text-gray-600">
+                                                                                        150x150px JPEG, PNG Image
+                                                                                </span>
+                                                                                <input type='file' name='avatar' onChange={handleChange} />
+                                                                                <img src={previewImage} className='size-16 image-input-placeholder rounded-full border-2 border-success image-input-empty:border-gray-300' />
+                                                                        </div>
+                                                                </div>
+                                                                <InputText
+                                                                        label='Nama Lengkap'
+                                                                        name='nama_lengkap'
+                                                                        value={data.nama_lengkap}
+                                                                        onChange={handleChange}
+                                                                        required={true}
+                                                                />
+                                                                <InputText
+                                                                        label='No. Hp'
+                                                                        name='no_hp'
+                                                                        type='number'
+                                                                        value={data.no_hp}
+                                                                        onChange={handleChange}
+                                                                        required={true}
+                                                                />
+                                                                <InputText
+                                                                        label='Email'
+                                                                        name='email'
+                                                                        type='email'
+                                                                        value={data.email}
+                                                                        onChange={handleChange}
+                                                                        required={true}
+                                                                />
+                                                                <InputText
+                                                                        label='Username'
+                                                                        name='username'
+                                                                        value={data.username}
+                                                                        onChange={handleChange}
+                                                                        required={true}
+                                                                />
+                                                                <JenisUser
+                                                                        name='jenis_user'
+                                                                        value={data.jenis_user}
+                                                                        onChange={handleChange}
+                                                                        required={true}
+                                                                />
+                                                                <div className="flex justify-end gap-2">
+                                                                        <Link className="btn btn-secondary" to="/master_user">
+                                                                                Batal
+                                                                        </Link>
+
+                                                                        <button className="btn btn-primary" type='submit'>
+                                                                                Simpan
+                                                                                {
+                                                                                        loading &&
+                                                                                        <div className={`${loading ? 'inline-flex' : 'hidden'}`}>
+                                                                                                <i class="ki-filled ki-arrows-circle animate-spin"></i>
+                                                                                        </div>
+                                                                                }
+                                                                        </button>
                                                                 </div>
                                                         </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Nama Lengkap
-                                                                </label>
-                                                                <input className="input" type="text" name="name" placeholder='Nama Lengkap' value={data.name} onChange={handleChange} />
-                                                        </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        No. HP
-                                                                </label>
-                                                                <input className="input" name="phone" placeholder="Nomor Handphone" type="text" value={data.phone} onChange={handleChange} />
-                                                        </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Email
-                                                                </label>
-                                                                <input className="input" type="text" name="email" placeholder='Email' value={data.email} onChange={handleChange} />
-                                                        </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Username
-                                                                </label>
-                                                                <input className="input" type="text" name="username" placeholder='Username' value={data.username} onChange={handleChange} />
-                                                        </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Jenis User
-                                                                </label>
-                                                                <select className="select" name="userType" value={data.userType} onChange={handleChange}>
-                                                                        <option value=''>
-                                                                                Pilih Jenis User
-                                                                        </option>
-                                                                        <option value='Dosen'>
-                                                                                Dosen
-                                                                        </option>
-                                                                        <option value='Mahasiswa'>
-                                                                                Mahasiswa
-                                                                        </option>
-                                                                        <option value='Perseptor'>
-                                                                                Perseptor
-                                                                        </option>
-                                                                        <option value='Tenaga Pendidik'>
-                                                                                Tenaga Pendidik
-                                                                        </option>
-                                                                        <option value='Orang Tua'>
-                                                                                Orang Tua
-                                                                        </option>
-                                                                </select>
-                                                        </div>
-                                                        <div className="flex justify-end">
-                                                                <button className="btn btn-primary" onClick={handleSubmit}>
-                                                                        Simpan
-                                                                        {
-                                                                                loading &&
-                                                                                <div className={`${loading ? 'inline-flex' : 'hidden'}`}>
-                                                                                        <i class="ki-filled ki-arrows-circle animate-spin"></i>
-                                                                                </div>
-                                                                        }
-                                                                </button>
-                                                        </div>
-                                                </div>
+                                                </form>
                                         </div>
                                 </div>
-                        </div>
+                        </div >
                 </>
         )
 }

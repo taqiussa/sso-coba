@@ -4,6 +4,7 @@ import { deleteData, getData } from '@/functions/api/api';
 import PageTitle from '@/layouts/partials/PageTitle';
 import { Link } from 'react-router-dom';
 import { showAlert } from '@/functions/alert/showAlert';
+import Loading from '@/components/Loading';
 
 export default function MasterUser() {
         const [dataTable, setDataTable] = useState([]);
@@ -27,15 +28,19 @@ export default function MasterUser() {
         const handleDelete = async (id_user) => {
                 showAlert({
                         icon: 'warning',
-                        title: 'Are you sure?',
-                        text: 'This action will delete the user.',
+                        title: 'Anda Yakin?',
+                        text: 'Menghapus Data User.',
                         confirm: true,
                         onConfirm: async () => {
                                 try {
                                         await deleteData(`users/${id_user}`);
                                         fetchData();
                                 } catch (error) {
-                                        showAlert('error', 'Error!', 'Failed to delete user.');
+                                        showAlert({
+                                                icon: 'error',
+                                                title: 'Error!',
+                                                text: 'Failed to delete user.'
+                                        });
                                 }
                         },
                 });
@@ -160,13 +165,7 @@ export default function MasterUser() {
                                                                 columns={columns}
                                                                 data={dataTable ?? []}
                                                                 progressPending={isLoading}
-                                                                progressComponent={
-                                                                        <div className='flex flex-col items-center justify-center gap-3'>
-                                                                                <i class="ki-filled ki-arrows-circle animate-spin text-4xl"></i>
-                                                                                Memuat Data . . .
-                                                                        </div>
-
-                                                                }
+                                                                progressComponent={<Loading />}
                                                                 pagination
                                                                 paginationServer
                                                                 paginationTotalRows={totalData}
