@@ -10,6 +10,7 @@ import UserProfile from './pages/user/UserProfile'
 import CreateUser from './pages/master-data/master-user/CreateUser'
 import EditUser from './pages/master-data/master-user/EditUser'
 import MasterGroup from './pages/master-data/master-group/MasterGroup'
+import MasterAplikasi from './pages/master-data/master-group/MasterAplikasi'
 
 function App() {
   return (
@@ -27,7 +28,8 @@ function App() {
             <Route path='/edit-user/:id_user' element={<EditUser />} />
 
             {/* Master Group */}
-            <Route path='/master_group' element={<MasterGroup />} />
+            <Route path='/master_group' element={<MasterAplikasi />} />
+            <Route path='/master_group_group' element={<MasterGroup />} />
 
             <Route path='/user-profile' element={<UserProfile />} />
           </Route>
