@@ -102,7 +102,7 @@ export default function MasterAplikasi() {
                 },
                 {
                         name: 'Versi',
-                        selector: row => row.versi,
+                        selector: row => row.versi_aplikasi,
                 },
                 {
                         name: 'Edit',
