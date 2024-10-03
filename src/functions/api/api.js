@@ -87,7 +87,7 @@ export async function fetchServer(method, url, json = {}) {
                 const response = await axios.request(config);
                 return response.data;
         } catch (error) {
-                showAlert('error', 'Gagal');
+                return error.response.data;
         }
 }
 
