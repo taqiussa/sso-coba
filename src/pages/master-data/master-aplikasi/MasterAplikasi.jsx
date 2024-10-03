@@ -105,14 +105,14 @@ export default function MasterAplikasi() {
                         selector: row => row.versi_aplikasi,
                 },
                 {
-                        name: 'Edit',
-                        cell: row => <Link to={`/edit-group/${row.id_master_aplikasi}`} className="btn btn-sm btn-warning">Edit</Link>,
-                },
-                {
-                        name: 'Hapus',
-                        cell: row => <button
-                                className="btn btn-sm btn-danger"
-                                onClick={() => handleDelete(row.id_master_aplikasi)}>Hapus</button>,
+                        name: 'Aksi',
+                        cell: row =>
+                                <div className='flex gap-5'>
+                                        <Link to={`/edit_aplikasi/${row.id_master_aplikasi}`} className="btn btn-sm btn-warning">Edit</Link>,
+                                        <button
+                                                className="btn btn-sm btn-danger"
+                                                onClick={() => handleDelete(row.id_master_aplikasi)}>Hapus</button>,
+                                </div>
                 },
         ];
 
@@ -128,9 +128,9 @@ export default function MasterAplikasi() {
                                                 {/* <a className="btn btn-sm btn-light" href="#">
                                                         Import Data
                                                 </a> */}
-                                                {/* <Link className="btn btn-sm btn-primary" to="/create-user">
-                                                        Tambah Group
-                                                </Link> */}
+                                                <Link className="btn btn-sm btn-primary" to="/create_aplikasi">
+                                                        Tambah Aplikasi
+                                                </Link>
                                         </div>
                                 </div>
                         </div>
