@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { showAlert } from '@/functions/alert/showAlert';
 import Loading from '@/components/Loading';
 
-export default function MasterGroup() {
+export default function MasterAplikasi() {
         const [dataTable, setDataTable] = useState([]);
         const [data, setData] = useState({
                 limit: 10,
@@ -25,15 +25,15 @@ export default function MasterGroup() {
                 });
         };
 
-        const handleDelete = async (id_master_group) => {
+        const handleDelete = async (id_master_aplikasi) => {
                 showAlert({
                         icon: 'warning',
                         title: 'Anda Yakin?',
-                        text: 'Menghapus Data Group.',
+                        text: 'Menghapus Data Aplikasi.',
                         confirm: true,
                         onConfirm: async () => {
                                 try {
-                                        await deleteData(`mstgroupakses/e627ce87-ce12-4fe1-aebb-a833de6faeb5/${id_master_group}`);
+                                        // await deleteData(`mstgroupakses/e627ce87-ce12-4fe1-aebb-a833de6faeb5/${id_master_aplikasi}`);
                                         fetchData();
                                 } catch (error) {
                                         showAlert({
@@ -70,7 +70,7 @@ export default function MasterGroup() {
                                 filter: data.filter,
                         });
 
-                        const response = await getData(`mstgroupakses/99da12ac-6f5a-4012-b51b-1c21aadf4787?${queryURL.toString()}`);
+                        const response = await getData(`masterapps?${queryURL.toString()}`);
                         setDataTable(response.data.data);
                         setTotalData(response.data.recordsTotal);
                 } catch (err) {
@@ -82,8 +82,8 @@ export default function MasterGroup() {
 
         const columns = [
                 {
-                        name: 'Nama Group',
-                        selector: row => row.nama_group,
+                        name: 'Nama Aplikasi',
+                        selector: row => row.nama_aplikasi,
                         sortable: true,
                 },
                 {
@@ -92,33 +92,37 @@ export default function MasterGroup() {
                         sortable: true,
                 },
                 {
-                        name: 'ID Master Group',
-                        selector: row => row.id_master_group,
+                        name: 'image',
+                        selector: row => row.image,
                         sortable: true,
                 },
                 {
-                        name: 'ID Master Aplikasi',
-                        selector: row => row.id_master_aplikasi,
+                        name: 'URL',
+                        selector: row => row.url,
+                },
+                {
+                        name: 'Versi',
+                        selector: row => row.versi,
                 },
                 {
                         name: 'Edit',
-                        cell: row => <Link to={`/edit-group/${row.id_user}`} className="btn btn-sm btn-warning">Edit</Link>,
+                        cell: row => <Link to={`/edit-group/${row.id_master_aplikasi}`} className="btn btn-sm btn-warning">Edit</Link>,
                 },
                 {
                         name: 'Hapus',
                         cell: row => <button
                                 className="btn btn-sm btn-danger"
-                                onClick={() => handleDelete(row.id_master_group)}>Hapus</button>,
+                                onClick={() => handleDelete(row.id_master_aplikasi)}>Hapus</button>,
                 },
         ];
 
         return (
                 <>
-                        <PageTitle title="Master Group" />
+                        <PageTitle title="Master Aplikasi" />
                         <div className="container-fixed">
                                 <div className="flex flex-wrap items-center justify-between gap-5 pb-7.5">
                                         <div className="flex flex-col justify-center gap-2">
-                                                <h1 className="text-xl font-semibold text-gray-900">Master Group</h1>
+                                                <h1 className="text-xl font-semibold text-gray-900">Master Aplikasi</h1>
                                         </div>
                                         <div className="flex items-center gap-2.5">
                                                 {/* <a className="btn btn-sm btn-light" href="#">
