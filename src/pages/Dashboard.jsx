@@ -1,9 +1,32 @@
+import { getData } from "@/functions/api/api";
 import { avatarUrl } from "@/functions/config/env";
 import { useUser } from "@/functions/provider/UserProvider";
 import PageTitle from "@/layouts/partials/PageTitle";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
         const { user } = useUser();
+        const [data, setData] = useState([]);
+
+        const fetchData = async () => {
+                if (!user) return;
+
+                try {
+                        const response = await getData(`groupakses/userapps/${user.id_user}`);
+                        if (response?.success) {
+                                setData(response.data?.apps);
+                        } else {
+                                console.error("Failed to fetch data: ", response.message);
+                        }
+                } catch (error) {
+                        console.error("Error fetching menu: ", error);
+                }
+        };
+
+        useEffect(() => {
+                fetchData();
+        }, [])
+
         return (
                 <>
                         <PageTitle title="DASHBOARD" />
@@ -47,47 +70,24 @@ export default function Dashboard() {
                                 </div>
                         </div>
                         <div className="container-fixed ">
-                                <div className="grid grid-cols-2 md:flex gap-5 w-full lg:gap-7.5">
-                                        <div className="card">
-                                                <h3 className="font-bold text-lg p-2 border-b border-gray-300 text-center">
-                                                        Title Aplikasi
-                                                </h3>
-                                                <div className="card-body">
-                                                        <img src="/logo.png" className="size-32" />
+                                <div className="md:grid md:grid-cols-3 gap-5 w-full lg:gap-7.5">
+                                        {Object.entries(data).map(([category, items]) => (
+                                                <div className="card">
+                                                        <h3 className="font-bold text-lg p-2 border-b border-gray-300 text-center">
+                                                                {category}
+                                                        </h3>
+                                                        <div className="card-body">
+                                                                <img src="/logo.png" className="size-32" />
+                                                        </div>
+                                                        <div className="text-center text-gray-500">{items[0].deskripsi}</div>
+                                                        {
+                                                                items.map(app =>(
+                                                                        <div className="capitalize">{app.nama_group}</div>
+                                                                ))
+                                                        }
                                                 </div>
-                                        </div>
-                                        <div className="card">
-                                                <h3 className="font-bold text-lg p-2 border-b border-gray-300 text-center">
-                                                        Title Aplikasi
-                                                </h3>
-                                                <div className="card-body">
-                                                        <img src="/logo.png" className="size-32" />
-                                                </div>
-                                        </div>
-                                        <div className="card">
-                                                <h3 className="font-bold text-lg p-2 border-b border-gray-300 text-center">
-                                                        Title Aplikasi
-                                                </h3>
-                                                <div className="card-body">
-                                                        <img src="/logo.png" className="size-32" />
-                                                </div>
-                                        </div>
-                                        <div className="card">
-                                                <h3 className="font-bold text-lg p-2 border-b border-gray-300 text-center">
-                                                        Title Aplikasi
-                                                </h3>
-                                                <div className="card-body">
-                                                        <img src="/logo.png" className="size-32" />
-                                                </div>
-                                        </div>
-                                        <div className="card">
-                                                <h3 className="font-bold text-lg p-2 border-b border-gray-300 text-center">
-                                                        Title Aplikasi
-                                                </h3>
-                                                <div className="card-body">
-                                                        <img src="/logo.png" className="size-32" />
-                                                </div>
-                                        </div>
+                                        ))
+                                        }
                                 </div>
                         </div>
                 </>
