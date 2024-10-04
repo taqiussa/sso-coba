@@ -9,6 +9,11 @@ import MasterUser from './pages/master-data/master-user/MasterUser'
 import UserProfile from './pages/user/UserProfile'
 import CreateUser from './pages/master-data/master-user/CreateUser'
 import EditUser from './pages/master-data/master-user/EditUser'
+import MasterAplikasi from './pages/master-data/master-aplikasi/MasterAplikasi'
+import MasterGroup from './pages/master-data/master-group/MasterGroup'
+import MasterMenu from './pages/master-data/master-menu/MasterMenu'
+import CreateAplikasi from './pages/master-data/master-aplikasi/CreateAplikasi'
+import EditAplikasi from './pages/master-data/master-aplikasi/EditAplikasi'
 
 function App() {
   return (
@@ -19,9 +24,26 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route element={<PrivateRoute />}>
             <Route path='/dashboard' element={<Dashboard />} />
+
+            {/* Master Data */}
+            {/* Master Aplikasi */}
+            <Route path='/master_aplikasi' element={<MasterAplikasi />} />
+            <Route path='/create_aplikasi' element={<CreateAplikasi />} />
+            <Route path='/edit_aplikasi/:id_master_aplikasi' element={<EditAplikasi />} />
+
+            {/* Master Group */}
+            <Route path='/master_group' element={<MasterGroup />} />
+
+
+            {/* Master Menu */}
+            <Route path='/master_menu' element={<MasterMenu />} />
+
+
+            {/* Master User */}
             <Route path='/master_user' element={<MasterUser />} />
             <Route path='/create-user' element={<CreateUser />} />
             <Route path='/edit-user/:id_user' element={<EditUser />} />
+
             <Route path='/user-profile' element={<UserProfile />} />
           </Route>
         </Routes>
