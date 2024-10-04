@@ -107,11 +107,15 @@ export default function MasterAplikasi() {
                 {
                         name: 'Aksi',
                         cell: row =>
-                                <div className='flex gap-5'>
-                                        <Link to={`/edit_aplikasi/${row.id_master_aplikasi}`} className="btn btn-sm btn-warning">Edit</Link>,
-                                        <button
-                                                className="btn btn-sm btn-danger"
-                                                onClick={() => handleDelete(row.id_master_aplikasi)}>Hapus</button>,
+                                <div className='gap-5 flex items-center justify-center'>
+                                        <div>
+                                                <Link to={`/edit_aplikasi/${row.id_master_aplikasi}`} className="btn btn-sm btn-warning">Edit</Link>
+                                        </div>
+                                        <div>
+                                                <button
+                                                        className="btn btn-sm btn-danger"
+                                                        onClick={() => handleDelete(row.id_master_aplikasi)}>Hapus</button>
+                                        </div>
                                 </div>
                 },
         ];

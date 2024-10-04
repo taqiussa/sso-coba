@@ -13,20 +13,32 @@ export default function CreateAplikasi() {
                 url: '',
                 tgl_version: '',
                 versi_aplikasi: '',
-                image: '',
+                image: null
         });
 
         const [previewImage, setPreviewImage] = useState('media/avatars/blank.png');
 
         const handleChange = (e) => {
                 const { name, value, type, files } = e.target;
+                const maxSize = 500 * 1024;
+
                 if (type === 'file') {
                         if (files && files[0]) {
+                                const file = files[0];
+
+                                if (file.size > maxSize) {
+                                        showAlert({icon:'error', title:'Max. Size', text:'File size exceeds the 500KB limit.'});
+                                        return;
+                                }
+
                                 setData({
                                         ...data,
-                                        [name]: files[0],
+                                        [name]: file,
                                 });
-                                setPreviewImage(URL.createObjectURL(files[0]));
+
+                                console.log(data);
+
+                                setPreviewImage(URL.createObjectURL(file)); 
                         } else {
                                 console.log("No file selected or file input is empty");
                         }
@@ -38,20 +50,33 @@ export default function CreateAplikasi() {
                 }
         };
 
-        const handleSubmit = async () => {
+
+        const handleSubmit = async (e) => {
+                e.preventDefault();
                 setLoading(true);
                 try {
-
                         const response = await postData('masterapps/', data);
-
-                        if (response.success) {
-                                showAlert({ icon: 'success', title: 'Success!', text: 'Apps created successfully.' });
+                        if (response.success === true) {
+                                showAlert({
+                                        icon: 'success',
+                                        title: 'Success!',
+                                        text: 'Apps created successfully.'
+                                });
                         } else {
-                                showAlert({ icon: 'error', title: 'Error!', text: response.message || 'Failed to create apps.' });
+                                showAlert({
+                                        icon: 'error',
+                                        title: 'Error!',
+                                        text: Object.values(response.data)
+                                                .map(message => `- ${message}`)
+                                                .join('\n')
+                                });
                         }
                 } catch (error) {
-                        console.error("Error submitting data:", error);
-                        showAlert({ icon: 'error', title: 'Error!', text: 'An unexpected error occurred. Please try again.' });
+                        showAlert({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'An unexpected error occurred. Please try again.'
+                        });
                 } finally {
                         setLoading(false);
                 }
@@ -63,7 +88,7 @@ export default function CreateAplikasi() {
                         <h1 className="text-xl font-semibold leading-none text-gray-900 mb-3">
                                 Master Aplikasi
                         </h1>
-                        <Link className="btn btn-sm btn-light" to="/master_user">
+                        <Link className="btn btn-sm btn-light" to="/master_aplikasi">
                                 <i className="ki-filled ki-black-left-line"></i>
                                 <div>
                                         Kembali
@@ -120,7 +145,7 @@ export default function CreateAplikasi() {
                                                                 </label>
                                                                 <div className="flex items-center justify-between flex-wrap grow gap-2.5">
                                                                         <span className="text-2sm font-medium text-gray-600">
-                                                                                150x150px JPEG, PNG Image
+                                                                                150x150px JPEG, PNG Image (max : 500kb)
                                                                         </span>
                                                                         <input type='file' name='image' onChange={handleChange} />
                                                                         <img src={data.image ? previewImage : '/media/avatars/blank.png'} className='size-16 image-input-placeholder rounded-full border-2 border-success image-input-empty:border-gray-300' />

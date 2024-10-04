@@ -1,40 +1,39 @@
+import InputText from '@/components/InputText';
 import { showAlert } from '@/functions/alert/showAlert';
-import { getData, postData, updateData } from '@/functions/api/api';
+import { getData, updateData } from '@/functions/api/api';
 import PageTitle from '@/layouts/partials/PageTitle'
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
 export default function EditAplikasi() {
-        const { id_user } = useParams();
+        const { id_master_aplikasi } = useParams();
         const navigate = useNavigate();
         const [loading, setLoading] = useState(false);
         const [data, setData] = useState({
-                name: '',
-                phone: '',
-                email: '',
-                idPerson: '',
-                username: '',
-                userType: '',
-                avatar: null
+                nama_aplikasi: '',
+                deskripsi: '',
+                url: '',
+                tgl_version: '',
+                versi_aplikasi: '',
+                image: null
         });
 
         const [previewImage, setPreviewImage] = useState('media/avatars/blank.png');
 
         const fetchData = async () => {
-                if (!id_user) return;
+                if (!id_master_aplikasi) return;
 
                 try {
-                        const response = await getData(`users/${id_user}`);
+                        const response = await getData(`masterapps/${id_master_aplikasi}`);
 
                         if (response?.success) {
                                 setData({
-                                        name: response.data[0].nama_lengkap ?? '',
-                                        phone: response.data[0].no_hp ?? '',
-                                        email: response.data[0].email ?? '',
-                                        username: response.data[0].username ?? '',
-                                        userType: response.data[0].jenis_user ?? '',
-                                        idPerson: response.data[0].id_person ?? '',
-                                        avatar: response.data[0].avatar ?? ''
+                                        nama_aplikasi: response.data[0].nama_aplikasi ?? '',
+                                        deskripsi: response.data[0].deskripsi ?? '',
+                                        url: response.data[0].url ?? '',
+                                        tgl_version: response.data[0].tgl_version ?? '',
+                                        versi_aplikasi: response.data[0].versi_aplikasi ?? '',
+                                        image: response.data[0].image ?? ''
                                 })
                         } else {
                                 console.error("Failed to fetch menu: ", response.message);
@@ -65,31 +64,32 @@ export default function EditAplikasi() {
         };
 
         const handleSubmit = async () => {
-                setLoading(true); // Set loading to true at the start
+                setLoading(true);
                 try {
-                        // Prepare the data for submission
-                        const payload = {
-                                Nama_Lengkap: data.name,
-                                Id_Person: data.idPerson,
-                                Jenis_User: data.userType,
-                                No_Hp: data.phone,
-                                Username: data.username,
-                                Email: data.email,
-                                Avatar: data.avatar,
-                        };
 
-                        // Make the POST request
-                        const response = await updateData(`users/${id_user}`, payload, true);
+                        const response = await updateData(`users/${id_master_aplikasi}`, data, true);
 
-                        if (response.success) {
-                                showAlert('success', 'Success!', 'User edited successfully.');
-                                navigate('/master_user');
+                        if (response.success === true) {
+                                showAlert({
+                                        icon: 'success',
+                                        title: 'Success!',
+                                        text: 'Apps edited successfully.'
+                                });
                         } else {
-                                showAlert('error', 'Error!', response.message || 'Failed to create user.');
+                                showAlert({
+                                        icon: 'error',
+                                        title: 'Error!',
+                                        text: Object.values(response.data)
+                                                .map(message => `- ${message}`)
+                                                .join('\n')
+                                });
                         }
                 } catch (error) {
-                        console.error("Error submitting data:", error);
-                        showAlert('error', 'Error!', 'An unexpected error occurred. Please try again.');
+                        showAlert({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'An unexpected error occurred. Please try again.'
+                        });
                 } finally {
                         setLoading(false);
                 }
@@ -105,11 +105,11 @@ export default function EditAplikasi() {
         }
         return (
                 <>
-                        <PageTitle title='Tambah User' />
+                        <PageTitle title='Tambah Aplikasi' />
                         <h1 className="text-xl font-semibold leading-none text-gray-900 mb-3">
-                                Master User
+                                Master Aplikasi
                         </h1>
-                        <Link className="btn btn-sm btn-light" to="/master_user">
+                        <Link className="btn btn-sm btn-light" to="/master_aplikasi">
                                 <i className="ki-filled ki-black-left-line"></i>
                                 <div>
                                         Kembali
@@ -120,72 +120,65 @@ export default function EditAplikasi() {
                                         <div className="card pb-2.5">
                                                 <div className="card-header" id="basic_settings">
                                                         <h3 className="card-title">
-                                                                Edit User
+                                                                Tambah Aplikasi
                                                         </h3>
                                                 </div>
                                                 <div className="card-body grid gap-5">
+                                                        <InputText
+                                                                label='Nama Aplikasi'
+                                                                name='nama_aplikasi'
+                                                                value={data.nama_aplikasi}
+                                                                onChange={handleChange}
+                                                                required={true}
+                                                        />
+                                                        <InputText
+                                                                label='Deskripsi'
+                                                                name='deskripsi'
+                                                                value={data.deskripsi}
+                                                                onChange={handleChange}
+                                                                required={true}
+                                                        />
+                                                        <InputText
+                                                                label='URL'
+                                                                name='url'
+                                                                value={data.url}
+                                                                onChange={handleChange}
+                                                                required={true}
+                                                        />
+                                                        <InputText
+                                                                label='Tanggal Versi'
+                                                                name='tgl_version'
+                                                                type='date'
+                                                                value={data.tgl_version}
+                                                                onChange={handleChange}
+                                                                required={true}
+                                                        />
+                                                        <InputText
+                                                                label='Versi'
+                                                                name='versi_aplikasi'
+                                                                value={data.versi_aplikasi}
+                                                                onChange={handleChange}
+                                                                required={true}
+                                                        />
                                                         <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
                                                                 <label className="form-label max-w-56">
                                                                         Photo
                                                                 </label>
                                                                 <div className="flex items-center justify-between flex-wrap grow gap-2.5">
                                                                         <span className="text-2sm font-medium text-gray-600">
-                                                                                150x150px JPEG, PNG Image
+                                                                                150x150px JPEG, PNG Image (max : 500kb)
                                                                         </span>
-                                                                        <input type='file' name='avatar' onChange={handleChange} />
-                                                                        <img src={data.avatar ? previewImage : '/media/avatars/blank.png'} className='size-16 image-input-placeholder rounded-full border-2 border-success image-input-empty:border-gray-300' />
+                                                                        <input type='file' name='image' onChange={handleChange} />
+                                                                        <img src={data.image ? previewImage : '/media/avatars/blank.png'} className='size-16 image-input-placeholder rounded-full border-2 border-success image-input-empty:border-gray-300' />
                                                                 </div>
                                                         </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Nama Lengkap
-                                                                </label>
-                                                                <input className="input" type="text" name="name" placeholder='Nama Lengkap' value={data.name} onChange={handleChange} />
-                                                        </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        No. HP
-                                                                </label>
-                                                                <input className="input" name="phone" placeholder="Nomor Handphone" type="text" value={data.phone} onChange={handleChange} />
-                                                        </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Email
-                                                                </label>
-                                                                <input className="input" type="text" name="email" placeholder='Email' value={data.email} onChange={handleChange} />
-                                                        </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Username
-                                                                </label>
-                                                                <input className="input" type="text" name="username" placeholder='Username' value={data.username} onChange={handleChange} />
-                                                        </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Jenis User
-                                                                </label>
-                                                                <select className="select" name="userType" value={data.userType} onChange={handleChange}>
-                                                                        <option value=''>
-                                                                                Pilih Jenis User
-                                                                        </option>
-                                                                        <option value='Dosen'>
-                                                                                Dosen
-                                                                        </option>
-                                                                        <option value='Mahasiswa'>
-                                                                                Mahasiswa
-                                                                        </option>
-                                                                        <option value='Perseptor'>
-                                                                                Perseptor
-                                                                        </option>
-                                                                        <option value='Tenaga Pendidik'>
-                                                                                Tenaga Pendidik
-                                                                        </option>
-                                                                        <option value='Orang Tua'>
-                                                                                Orang Tua
-                                                                        </option>
-                                                                </select>
-                                                        </div>
-                                                        <div className="flex justify-end">
+                                                        <div className="flex justify-end gap-5">
+                                                                <Link
+                                                                        className='btn btn-secondary'
+                                                                        to='/master_aplikasi'
+                                                                        children='Batal'
+                                                                />
+                                                                
                                                                 <button className="btn btn-primary" onClick={handleSubmit}>
                                                                         Simpan
                                                                         {
