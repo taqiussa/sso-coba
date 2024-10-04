@@ -90,12 +90,3 @@ export async function fetchServer(method, url, json = {}) {
                 return error.response.data;
         }
 }
-
-//function cadangan jika dibutuhkan jangan dihapus
-export function createFormData(json) {
-        const formData = new FormData();
-        Object.keys(json).forEach(key => {
-                formData.append(key, json[key]);
-        });
-        return formData;
-}
