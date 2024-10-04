@@ -7,7 +7,6 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 
 export default function EditAplikasi() {
         const { id_master_aplikasi } = useParams();
-        const navigate = useNavigate();
         const [loading, setLoading] = useState(false);
         const [data, setData] = useState({
                 nama_aplikasi: '',
@@ -67,7 +66,7 @@ export default function EditAplikasi() {
                 setLoading(true);
                 try {
 
-                        const response = await updateData(`users/${id_master_aplikasi}`, data, true);
+                        const response = await updateData(`masterapps/${id_master_aplikasi}`, data);
 
                         if (response.success === true) {
                                 showAlert({

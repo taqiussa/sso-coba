@@ -33,7 +33,7 @@ export default function MasterAplikasi() {
                         confirm: true,
                         onConfirm: async () => {
                                 try {
-                                        // await deleteData(`mstgroupakses/e627ce87-ce12-4fe1-aebb-a833de6faeb5/${id_master_aplikasi}`);
+                                        await deleteData(`masterapps/${id_master_aplikasi}`);
                                         fetchData();
                                 } catch (error) {
                                         showAlert({
