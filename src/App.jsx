@@ -14,6 +14,7 @@ import MasterGroup from './pages/master-data/master-group/MasterGroup'
 import MasterMenu from './pages/master-data/master-menu/MasterMenu'
 import CreateAplikasi from './pages/master-data/master-aplikasi/CreateAplikasi'
 import EditAplikasi from './pages/master-data/master-aplikasi/EditAplikasi'
+import SetAksesGroup from './pages/master-data/master-group/SetAksesGroup'
 
 function App() {
   return (
@@ -33,7 +34,7 @@ function App() {
 
             {/* Master Group */}
             <Route path='/master_group' element={<MasterGroup />} />
-
+            <Route path='/set_akses_group/:id_master_group' element={<SetAksesGroup />} />
 
             {/* Master Menu */}
             <Route path='/master_menu' element={<MasterMenu />} />
