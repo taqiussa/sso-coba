@@ -5,6 +5,7 @@ import PageTitle from '@/layouts/partials/PageTitle';
 import { Link } from 'react-router-dom';
 import { showAlert } from '@/functions/alert/showAlert';
 import Loading from '@/components/Loading';
+import { queryURL } from '@/functions/utils/utils';
 
 export default function MasterUser() {
         const [dataTable, setDataTable] = useState([]);
@@ -63,14 +64,7 @@ export default function MasterUser() {
         const fetchData = async () => {
                 setIsLoading(true);
                 try {
-                        const queryURL = new URLSearchParams({
-                                limit: data.limit,
-                                offset: data.offset,
-                                order: data.order,
-                                filter: data.filter,
-                        });
-
-                        const response = await getData(`users/?${queryURL.toString()}`);
+                        const response = await getData(`users/?${queryURL(data)}`);
                         setDataTable(response.data.data);
                         setTotalData(response.data.recordsTotal);
                 } catch (err) {
