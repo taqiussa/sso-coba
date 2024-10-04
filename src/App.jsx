@@ -29,7 +29,7 @@ function App() {
             {/* Master Aplikasi */}
             <Route path='/master_aplikasi' element={<MasterAplikasi />} />
             <Route path='/create_aplikasi' element={<CreateAplikasi />} />
-            <Route path='/edit_aplikasi' element={<EditAplikasi />} />
+            <Route path='/edit_aplikasi/:id_master_aplikasi' element={<EditAplikasi />} />
 
             {/* Master Group */}
             <Route path='/master_group' element={<MasterGroup />} />
