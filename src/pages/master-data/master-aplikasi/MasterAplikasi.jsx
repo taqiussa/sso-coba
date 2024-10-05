@@ -33,7 +33,7 @@ export default function MasterAplikasi() {
                         confirm: true,
                         onConfirm: async () => {
                                 try {
-                                        // await deleteData(`mstgroupakses/e627ce87-ce12-4fe1-aebb-a833de6faeb5/${id_master_aplikasi}`);
+                                        await deleteData(`masterapps/${id_master_aplikasi}`);
                                         fetchData();
                                 } catch (error) {
                                         showAlert({
@@ -102,17 +102,21 @@ export default function MasterAplikasi() {
                 },
                 {
                         name: 'Versi',
-                        selector: row => row.versi,
+                        selector: row => row.versi_aplikasi,
                 },
                 {
-                        name: 'Edit',
-                        cell: row => <Link to={`/edit-group/${row.id_master_aplikasi}`} className="btn btn-sm btn-warning">Edit</Link>,
-                },
-                {
-                        name: 'Hapus',
-                        cell: row => <button
-                                className="btn btn-sm btn-danger"
-                                onClick={() => handleDelete(row.id_master_aplikasi)}>Hapus</button>,
+                        name: 'Aksi',
+                        cell: row =>
+                                <div className='gap-5 flex items-center justify-center'>
+                                        <div>
+                                                <Link to={`/edit_aplikasi/${row.id_master_aplikasi}`} className="btn btn-sm btn-warning">Edit</Link>
+                                        </div>
+                                        <div>
+                                                <button
+                                                        className="btn btn-sm btn-danger"
+                                                        onClick={() => handleDelete(row.id_master_aplikasi)}>Hapus</button>
+                                        </div>
+                                </div>
                 },
         ];
 
@@ -128,9 +132,9 @@ export default function MasterAplikasi() {
                                                 {/* <a className="btn btn-sm btn-light" href="#">
                                                         Import Data
                                                 </a> */}
-                                                {/* <Link className="btn btn-sm btn-primary" to="/create-user">
-                                                        Tambah Group
-                                                </Link> */}
+                                                <Link className="btn btn-sm btn-primary" to="/create_aplikasi">
+                                                        Tambah Aplikasi
+                                                </Link>
                                         </div>
                                 </div>
                         </div>

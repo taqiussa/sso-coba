@@ -1,3 +1,4 @@
+import InputText from '@/components/InputText';
 import { showAlert } from '@/functions/alert/showAlert';
 import { postData } from '@/functions/api/api';
 import PageTitle from '@/layouts/partials/PageTitle'
@@ -7,27 +8,37 @@ import { Link } from 'react-router-dom'
 export default function CreateAplikasi() {
         const [loading, setLoading] = useState(false);
         const [data, setData] = useState({
-                nama_lengkap: '',
-                no_hp: '',
-                email: '',
-                username: '',
-                jenis_user: '',
-                password: '12345678',
-                id_person: '31afd140-3834-4ff1-a68c-d2457cf9879e',
-                avatar: null
+                nama_aplikasi: '',
+                deskripsi: '',
+                url: '',
+                tgl_version: '',
+                versi_aplikasi: '',
+                image: null
         });
 
         const [previewImage, setPreviewImage] = useState('media/avatars/blank.png');
 
         const handleChange = (e) => {
                 const { name, value, type, files } = e.target;
+                const maxSize = 500 * 1024;
+
                 if (type === 'file') {
                         if (files && files[0]) {
+                                const file = files[0];
+
+                                if (file.size > maxSize) {
+                                        showAlert({icon:'error', title:'Max. Size', text:'File size exceeds the 500KB limit.'});
+                                        return;
+                                }
+
                                 setData({
                                         ...data,
-                                        [name]: files[0],
+                                        [name]: file,
                                 });
-                                setPreviewImage(URL.createObjectURL(files[0]));
+
+                                console.log(data);
+
+                                setPreviewImage(URL.createObjectURL(file)); 
                         } else {
                                 console.log("No file selected or file input is empty");
                         }
@@ -39,20 +50,33 @@ export default function CreateAplikasi() {
                 }
         };
 
-        const handleSubmit = async () => {
+
+        const handleSubmit = async (e) => {
+                e.preventDefault();
                 setLoading(true);
                 try {
-
-                        const response = await postData('users/', data);
-
-                        if (response.success) {
-                                showAlert('success', 'Success!', 'User created successfully.');
+                        const response = await postData('masterapps/', data);
+                        if (response.success === true) {
+                                showAlert({
+                                        icon: 'success',
+                                        title: 'Success!',
+                                        text: 'Apps created successfully.'
+                                });
                         } else {
-                                showAlert('error', 'Error!', response.message || 'Failed to create user.');
+                                showAlert({
+                                        icon: 'error',
+                                        title: 'Error!',
+                                        text: Object.values(response.data)
+                                                .map(message => `- ${message}`)
+                                                .join('\n')
+                                });
                         }
                 } catch (error) {
-                        console.error("Error submitting data:", error);
-                        showAlert('error', 'Error!', 'An unexpected error occurred. Please try again.');
+                        showAlert({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'An unexpected error occurred. Please try again.'
+                        });
                 } finally {
                         setLoading(false);
                 }
@@ -60,11 +84,11 @@ export default function CreateAplikasi() {
 
         return (
                 <>
-                        <PageTitle title='Tambah User' />
+                        <PageTitle title='Tambah Aplikasi' />
                         <h1 className="text-xl font-semibold leading-none text-gray-900 mb-3">
-                                Master User
+                                Master Aplikasi
                         </h1>
-                        <Link className="btn btn-sm btn-light" to="/master_user">
+                        <Link className="btn btn-sm btn-light" to="/master_aplikasi">
                                 <i className="ki-filled ki-black-left-line"></i>
                                 <div>
                                         Kembali
@@ -75,70 +99,57 @@ export default function CreateAplikasi() {
                                         <div className="card pb-2.5">
                                                 <div className="card-header" id="basic_settings">
                                                         <h3 className="card-title">
-                                                                Tambah User
+                                                                Tambah Aplikasi
                                                         </h3>
                                                 </div>
                                                 <div className="card-body grid gap-5">
+                                                        <InputText
+                                                                label='Nama Aplikasi'
+                                                                name='nama_aplikasi'
+                                                                value={data.nama_aplikasi}
+                                                                onChange={handleChange}
+                                                                required={true}
+                                                        />
+                                                        <InputText
+                                                                label='Deskripsi'
+                                                                name='deskripsi'
+                                                                value={data.deskripsi}
+                                                                onChange={handleChange}
+                                                                required={true}
+                                                        />
+                                                        <InputText
+                                                                label='URL'
+                                                                name='url'
+                                                                value={data.url}
+                                                                onChange={handleChange}
+                                                                required={true}
+                                                        />
+                                                        <InputText
+                                                                label='Tanggal Versi'
+                                                                name='tgl_version'
+                                                                type='date'
+                                                                value={data.tgl_version}
+                                                                onChange={handleChange}
+                                                                required={true}
+                                                        />
+                                                        <InputText
+                                                                label='Versi'
+                                                                name='versi_aplikasi'
+                                                                value={data.versi_aplikasi}
+                                                                onChange={handleChange}
+                                                                required={true}
+                                                        />
                                                         <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
                                                                 <label className="form-label max-w-56">
                                                                         Photo
                                                                 </label>
                                                                 <div className="flex items-center justify-between flex-wrap grow gap-2.5">
                                                                         <span className="text-2sm font-medium text-gray-600">
-                                                                                150x150px JPEG, PNG Image
+                                                                                150x150px JPEG, PNG Image (max : 500kb)
                                                                         </span>
-                                                                        <input type='file' name='avatar' onChange={handleChange} />
-                                                                        <img src={data.avatar ? previewImage : '/media/avatars/blank.png'} className='size-16 image-input-placeholder rounded-full border-2 border-success image-input-empty:border-gray-300' />
+                                                                        <input type='file' name='image' onChange={handleChange} />
+                                                                        <img src={data.image ? previewImage : '/media/avatars/blank.png'} className='size-16 image-input-placeholder rounded-full border-2 border-success image-input-empty:border-gray-300' />
                                                                 </div>
-                                                        </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Nama Lengkap
-                                                                </label>
-                                                                <input className="input" required type="text" name="nama_lengkap" placeholder='Nama Lengkap' value={data.nama_lengkap} onChange={handleChange} />
-                                                        </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        No. HP
-                                                                </label>
-                                                                <input className="input" required name="no_hp" placeholder="Nomor Handphone" type="text" value={data.no_hp} onChange={handleChange} />
-                                                        </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Email
-                                                                </label>
-                                                                <input className="input" required type="text" name="email" placeholder='Email' value={data.email} onChange={handleChange} />
-                                                        </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Username
-                                                                </label>
-                                                                <input className="input" required type="text" name="username" placeholder='Username' value={data.username} onChange={handleChange} />
-                                                        </div>
-                                                        <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                <label className="form-label max-w-56">
-                                                                        Jenis User
-                                                                </label>
-                                                                <select required className="select" name="jenis_user" value={data.jenis_user} onChange={handleChange}>
-                                                                        <option value=''>
-                                                                                Pilih Jenis User
-                                                                        </option>
-                                                                        <option value='Dosen'>
-                                                                                Dosen
-                                                                        </option>
-                                                                        <option value='Mahasiswa'>
-                                                                                Mahasiswa
-                                                                        </option>
-                                                                        <option value='Perseptor'>
-                                                                                Perseptor
-                                                                        </option>
-                                                                        <option value='Tenaga Pendidik'>
-                                                                                Tenaga Pendidik
-                                                                        </option>
-                                                                        <option value='Orang Tua'>
-                                                                                Orang Tua
-                                                                        </option>
-                                                                </select>
                                                         </div>
                                                         <div className="flex justify-end">
                                                                 <button className="btn btn-primary" onClick={handleSubmit}>
