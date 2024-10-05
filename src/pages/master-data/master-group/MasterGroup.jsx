@@ -7,6 +7,7 @@ import Loading from '@/components/Loading';
 import { queryURL } from '@/functions/utils/utils';
 import InputText from '@/components/InputText';
 import ListAplikasi from '@/components/ListAplikasi';
+import { Link } from 'react-router-dom';
 
 export default function MasterGroup() {
         const [data, setData] = useState({
@@ -205,7 +206,7 @@ export default function MasterGroup() {
         const columns = [
                 {
                         name: 'Set Akses',
-                        selector: row => <button className='btn btn-sm btn-info' children='Set Akses' />
+                        selector: row => <Link to={`/set_akses_group/${data.id_master_aplikasi}/${row.id_master_group}`} className='btn btn-sm btn-info' children='Set Akses' />
                 },
                 {
                         name: 'Nama Group',

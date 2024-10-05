@@ -5,14 +5,10 @@ import PageTitle from '@/layouts/partials/PageTitle';
 import { showAlert } from '@/functions/alert/showAlert';
 import Loading from '@/components/Loading';
 import { queryURL } from '@/functions/utils/utils';
+import { Link, useParams } from 'react-router-dom';
 
 export default function SetAksesGroup() {
-        const [data, setData] = useState({
-                id_master_aplikasi: '',
-                id_master_group: '',
-                id_master_modul: '46ea07da-3c88-41b3-93b0-d94e714e6e0a',
-        })
-
+        const { id_master_aplikasi, id_master_group } = useParams();
         const [dataQuery, setDataQuery] = useState({
                 limit: 10,
                 offset: 0,
@@ -24,33 +20,7 @@ export default function SetAksesGroup() {
         const [totalData, setTotalData] = useState(0);
         const [loading, setLoading] = useState(false);
         const [isLoading, setIsLoading] = useState(false);
-        const [loadingUpdate, setLoadingUpdate] = useState(false);
         const [debouncedFilter, setDebouncedFilter] = useState(dataQuery.filter);
-        const [listAplikasi, setListAplikasi] = useState([]);
-        const [editingRow, setEditingRow] = useState(null);
-        const [editedData, setEditedData] = useState({});
-
-        const handleEditClick = (row) => {
-                console.log(row);
-                setEditingRow(row.id_master_group);
-                setEditedData(row);
-        };
-
-
-        const handleChangeEdit = (e) => {
-                setEditedData({
-                        ...editedData,
-                        [e.target.name]: e.target.value,
-                });
-        };
-
-
-        const handleChange = (e) => {
-                setData({
-                        ...data,
-                        [e.target.name]: e.target.value,
-                });
-        };
 
         const handleChangeQuery = (e) => {
                 setDataQuery({
@@ -59,17 +29,18 @@ export default function SetAksesGroup() {
                 });
         };
 
-        const handleUpdate = async (e) => {
+
+        const handleDelete = async (e, id_group_akses) => {
                 e.preventDefault();
-                setLoadingUpdate(true);
+                setLoading(true);
                 try {
-                        const response = await updateData(`mstgroupakses/${editingRow}`, editedData);
+                        const response = await deleteData(`groupakses/${id_group_akses}`);
                         if (response.success === true) {
-                                showAlert({
-                                        icon: 'success',
-                                        title: 'Success!',
-                                        text: 'Group created successfully.'
-                                });
+                                // showAlert({
+                                //         icon: 'success',
+                                //         title: 'Success!',
+                                //         text: 'Group created successfully.'
+                                // });
                                 fetchData();
                         } else {
                                 showAlert({
@@ -87,49 +58,21 @@ export default function SetAksesGroup() {
                                 text: 'An unexpected error occurred. Please try again.'
                         });
                 } finally {
-                        setLoadingUpdate(false);
-                        setEditingRow(null);
+                        setLoading(false);
                 }
         };
 
-        const handleDelete = async (id_master_group) => {
-                showAlert({
-                        icon: 'warning',
-                        title: 'Anda Yakin?',
-                        text: 'Menghapus Data Group.',
-                        confirm: true,
-                        onConfirm: async () => {
-                                try {
-                                        await deleteData(`mstgroupakses/${id_master_group}`);
-                                        showAlert({
-                                                icon: 'success',
-                                                title: 'Success!',
-                                                text: 'Group deleted successfully.'
-                                        });
-
-                                        fetchData();
-                                } catch (error) {
-                                        showAlert({
-                                                icon: 'error',
-                                                title: 'Error!',
-                                                text: 'Failed to delete groupS.'
-                                        });
-                                }
-                        },
-                });
-        };
-
-        const handleSubmit = async (e) => {
+        const handleSubmit = async (e, id_master_modul) => {
                 e.preventDefault();
                 setLoading(true);
                 try {
-                        const response = await postData('mstgroupakses', data);
+                        const response = await postData('groupakses', { id_master_aplikasi, id_master_group, id_master_modul });
                         if (response.success === true) {
-                                showAlert({
-                                        icon: 'success',
-                                        title: 'Success!',
-                                        text: 'Group created successfully.'
-                                });
+                                // showAlert({
+                                //         icon: 'success',
+                                //         title: 'Success!',
+                                //         text: 'Group created successfully.'
+                                // });
                                 fetchData();
                         } else {
                                 showAlert({
@@ -156,7 +99,7 @@ export default function SetAksesGroup() {
         const fetchData = async () => {
                 setIsLoading(true);
                 try {
-                        const response = await getData(`mstgroupakses/${data.id_master_aplikasi}?${queryURL(dataQuery)}`);
+                        const response = await getData(`mstgroupakses/modul/${id_master_aplikasi}/${id_master_group}?${queryURL(dataQuery)}`);
                         setDataTable(response.data.data);
                         setTotalData(response.data.recordsTotal);
                 } catch (err) {
@@ -165,24 +108,6 @@ export default function SetAksesGroup() {
                         setIsLoading(false);
                 }
         };
-
-        const fetchAllAplikasi = async () => {
-                setIsLoading(true);
-                try {
-                        const response = await getData(`masterapps/?limit=100&offset=0&order=&filter=`);
-                        if (response.success) {
-                                setListAplikasi(response.data.data);
-                        }
-                } catch (err) {
-                        console.error('Error fetching data:', err);
-                } finally {
-                        setIsLoading(false);
-                }
-        };
-
-        useEffect(() => {
-                fetchAllAplikasi();
-        }, []);
 
         useEffect(() => {
                 const timer = setTimeout(() => {
@@ -195,73 +120,33 @@ export default function SetAksesGroup() {
         }, [dataQuery.filter]);
 
         useEffect(() => {
-                if (data.id_master_aplikasi != '') {
-                        fetchData();
-                }
-        }, [data.id_master_aplikasi, dataQuery.limit, dataQuery.offset, dataQuery.order, debouncedFilter]);
+                fetchData();
+        }, [dataQuery.limit, dataQuery.offset, dataQuery.order, debouncedFilter]);
 
         const columns = [
                 {
-                        name: 'Set Akses',
-                        selector: row => <button className='btn btn-sm btn-info' children='Set Akses' />
+                        name: 'Pilih',
+                        selector: row =>
+                                row.id_group_akses ?
+                                        <button className='btn btn-success' children='ON' onClick={(e) => handleDelete(e, row.id_group_akses)} />
+                                        :
+                                        <button className='btn btn-danger' children='OFF' onClick={(e) => handleSubmit(e, row.id_master_modul)} />
+
                 },
                 {
-                        name: 'Nama Group',
-                        selector: row => editingRow === row.id_master_group ? (
-                                <input
-                                        type="text"
-                                        name="nama_group"
-                                        value={editedData.nama_group || ''}
-                                        onChange={handleChangeEdit}
-                                        className="input"
-                                />
-                        ) : (
-                                row.nama_group
-                        ),
+                        name: 'Main Menu',
+                        selector: row => row.nama_menu,
                         sortable: true,
                 },
                 {
-                        name: 'Deskripsi',
-                        selector: row => editingRow === row.id_master_group ? (
-                                <input
-                                        type="text"
-                                        name="deskripsi"
-                                        value={editedData.deskripsi || ''}
-                                        onChange={handleChangeEdit}
-                                        className="input"
-                                />
-                        ) : (
-                                row.deskripsi
-                        ),
+                        name: 'Sub Menu',
+                        selector: row => row.nama_modul,
                         sortable: true,
                 },
                 {
-                        name: 'Aksi',
-                        cell: row => editingRow === row.id_master_group ? (
-                                <form onSubmit={handleUpdate} className="flex gap-3">
-                                        <div>
-                                                <button type='submit' className="btn btn-sm btn-success">
-                                                        Update
-                                                        {
-                                                                loadingUpdate &&
-                                                                <div className={`${loadingUpdate ? 'inline-flex' : 'hidden'}`}>
-                                                                        <i class="ki-filled ki-arrows-circle animate-spin"></i>
-                                                                </div>
-                                                        }
-                                                </button>
-                                        </div>
-                                        <div>
-                                                <button onClick={() => setEditingRow(null)} className="btn btn-sm btn-secondary">Batal</button>
-                                        </div>
-                                </form>
-                        ) : (
-                                <div className="flex gap-3">
-                                        <button onClick={() => handleEditClick(row)} className="btn btn-sm btn-warning">Edit</button>
-                                        <button
-                                                className="btn btn-sm btn-danger"
-                                                onClick={() => handleDelete(row.id_master_group)}>Hapus</button>
-                                </div>
-                        ),
+                        name: 'id group akses',
+                        selector: row => row.id_group_akses,
+                        sortable: true,
                 },
         ];
 
@@ -272,6 +157,12 @@ export default function SetAksesGroup() {
                                 <div className="flex flex-wrap items-center justify-between gap-5 pb-7.5">
                                         <div className="flex flex-col justify-center gap-2">
                                                 <h1 className="text-xl font-semibold text-gray-900">Set Akses Group</h1>
+                                                <Link className="btn btn-sm btn-light" to="/master_group">
+                                                        <i className="ki-filled ki-black-left-line"></i>
+                                                        <div>
+                                                                Kembali
+                                                        </div>
+                                                </Link>
                                         </div>
                                 </div>
                                 <div className="card card-grid min-w-full mt-5">
