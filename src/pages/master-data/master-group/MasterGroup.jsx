@@ -2,13 +2,11 @@ import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { deleteData, getData, postData, updateData } from '@/functions/api/api';
 import PageTitle from '@/layouts/partials/PageTitle';
-import { Link } from 'react-router-dom';
 import { showAlert } from '@/functions/alert/showAlert';
 import Loading from '@/components/Loading';
 import { queryURL } from '@/functions/utils/utils';
 import InputText from '@/components/InputText';
 import ListAplikasi from '@/components/ListAplikasi';
-import select from '@/metronic/core/plugins/components/select';
 
 export default function MasterGroup() {
         const [data, setData] = useState({
