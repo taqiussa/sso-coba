@@ -4,6 +4,8 @@ import { deleteData, getData } from '@/functions/api/api';
 import PageTitle from '@/layouts/partials/PageTitle';
 import { Link } from 'react-router-dom';
 import { showAlert } from '@/functions/alert/showAlert';
+import Loading from '@/components/Loading';
+import { queryURL } from '@/functions/utils/utils';
 
 export default function MasterUser() {
         const [dataTable, setDataTable] = useState([]);
@@ -15,6 +17,7 @@ export default function MasterUser() {
         });
         const [totalData, setTotalData] = useState(0);
         const [isLoading, setIsLoading] = useState(false);
+        const [debouncedFilter, setDebouncedFilter] = useState(data.filter);
 
         const handleChange = (e) => {
                 setData({
@@ -26,35 +29,42 @@ export default function MasterUser() {
         const handleDelete = async (id_user) => {
                 showAlert({
                         icon: 'warning',
-                        title: 'Are you sure?',
-                        text: 'This action will delete the user.',
+                        title: 'Anda Yakin?',
+                        text: 'Menghapus Data User.',
                         confirm: true,
                         onConfirm: async () => {
                                 try {
                                         await deleteData(`users/${id_user}`);
                                         fetchData();
                                 } catch (error) {
-                                        showAlert('error', 'Error!', 'Failed to delete user.');
+                                        showAlert({
+                                                icon: 'error',
+                                                title: 'Error!',
+                                                text: 'Failed to delete user.'
+                                        });
                                 }
                         },
                 });
         };
 
         useEffect(() => {
+                const timer = setTimeout(() => {
+                        setDebouncedFilter(data.filter);
+                }, 500);
+
+                return () => {
+                        clearTimeout(timer);
+                };
+        }, [data.filter]);
+
+        useEffect(() => {
                 fetchData();
-        }, [data.limit, data.offset, data.filter, data.order]);
+        }, [data.limit, data.offset, data.order, debouncedFilter]);
 
         const fetchData = async () => {
                 setIsLoading(true);
                 try {
-                        const queryURL = new URLSearchParams({
-                                limit: data.limit,
-                                offset: data.offset,
-                                order: data.order,
-                                filter: data.filter,
-                        });
-
-                        const response = await getData(`users/?${queryURL.toString()}`);
+                        const response = await getData(`users/?${queryURL(data)}`);
                         setDataTable(response.data.data);
                         setTotalData(response.data.recordsTotal);
                 } catch (err) {
@@ -79,6 +89,10 @@ export default function MasterUser() {
                         name: 'Username',
                         selector: row => row.username,
                         sortable: true,
+                },
+                {
+                        name: 'Kontak',
+                        selector: row => row.no_hp,
                 },
                 {
                         name: 'Avatar',
@@ -145,13 +159,7 @@ export default function MasterUser() {
                                                                 columns={columns}
                                                                 data={dataTable ?? []}
                                                                 progressPending={isLoading}
-                                                                progressComponent={
-                                                                        <div className='flex flex-col items-center justify-center gap-3'>
-                                                                                <i class="ki-filled ki-arrows-circle animate-spin text-4xl"></i>
-                                                                                Memuat Data . . .
-                                                                        </div>
-
-                                                                }
+                                                                progressComponent={<Loading />}
                                                                 pagination
                                                                 paginationServer
                                                                 paginationTotalRows={totalData}
@@ -162,14 +170,19 @@ export default function MasterUser() {
                                                         />
                                                         {
                                                                 !dataTable &&
-                                                                <div className="flex justify-center my-7">
-                                                                        <button
-                                                                                className="btn btn-secondary"
-                                                                                onClick={() => setData({ ...data, offset: 0 })}
-                                                                                disabled={data.offset === 0}
-                                                                        >
-                                                                                Refresh Data
-                                                                        </button>
+                                                                <div className="flex flex-col items-center justify-center my-7">
+                                                                        <div className='text-slate-400'>
+                                                                                No Data Available.
+                                                                        </div>
+                                                                        <div>
+                                                                                <button
+                                                                                        className="btn btn-secondary"
+                                                                                        onClick={() => setData({ ...data, offset: 0 })}
+                                                                                        disabled={data.offset === 0}
+                                                                                >
+                                                                                        Refresh Data
+                                                                                </button>
+                                                                        </div>
                                                                 </div>
                                                         }
                                                 </div>
