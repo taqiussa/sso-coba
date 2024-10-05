@@ -34,7 +34,7 @@ function App() {
 
             {/* Master Group */}
             <Route path='/master_group' element={<MasterGroup />} />
-            <Route path='/set_akses_group/:id_master_group' element={<SetAksesGroup />} />
+            <Route path='/set_akses_group/:id_master_aplikasi/:id_master_group' element={<SetAksesGroup />} />
 
             {/* Master Menu */}
             <Route path='/master_menu' element={<MasterMenu />} />
