@@ -1,4 +1,5 @@
 import CreateGroup from "./CreateGroup";
+import EditGroup from "./EditGroup";
 import MasterGroup from "./MasterGroup";
 import SetAksesGroup from "./SetAksesGroup";
 
@@ -16,8 +17,8 @@ const masterGroupRoutes = [
                 element: <CreateGroup />
         },
         {
-                path: '/edit_group/:id_master_aplikasi',
-                element: <CreateGroup />
+                path: '/edit_group/:id_master_aplikasi/:id_master_group',
+                element: <EditGroup />
         },
         {
                 path: '/set_akses_group/:id_master_aplikasi/:id_master_group',

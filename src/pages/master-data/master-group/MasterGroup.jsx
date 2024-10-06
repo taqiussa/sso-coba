@@ -134,7 +134,7 @@ export default function MasterGroup() {
                         name: 'Aksi',
                         cell: row =>
                                 <div className="flex gap-3">
-                                        {/* <button className="btn btn-sm btn-warning">Edit</button> */}
+                                        <Link to={`/edit_group/${id_master_aplikasi}/${row.id_master_group}`} className="btn btn-sm btn-warning">Edit</Link>
                                         <button
                                                 className="btn btn-sm btn-danger"
                                                 onClick={() => handleDelete(row.id_master_group)}>Hapus</button>
