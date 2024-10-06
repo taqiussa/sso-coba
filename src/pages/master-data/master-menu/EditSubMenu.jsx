@@ -5,10 +5,11 @@ import { showAlert } from '@/functions/alert/showAlert';
 import InputText from '@/components/InputText';
 import { Link, useParams } from 'react-router-dom';
 
-export default function EditMenu() {
-        const { id_master_aplikasi, id_master_menu } = useParams();
+export default function EditSubMenu() {
+        const { id_master_aplikasi, id_master_menu, id_master_modul } = useParams();
         const [data, setData] = useState({
-                nama_menu: '',
+                nama_modul: '',
+                path: '',
                 deskripsi: '',
                 order: '',
                 icon: '',
@@ -27,7 +28,11 @@ export default function EditMenu() {
                 e.preventDefault();
                 setLoading(true);
                 try {
-                        const response = await updateData(`mstmenu/${id_master_menu}`, data);
+                        const response = await updateData(`mstmenu/modul/${id_master_modul}`, {
+                                ...data,
+                                id_master_aplikasi,
+                                id_master_menu
+                        });
                         if (response.success === true) {
                                 showAlert({
                                         icon: 'success',
@@ -56,10 +61,11 @@ export default function EditMenu() {
 
         const fetchData = async () => {
                 try {
-                        const response = await getData(`mstmenu/detail/${id_master_menu}`);
+                        const response = await getData(`mstmenu/modul/detail/${id_master_modul}`);
 
                         setData({
-                                nama_menu: response.data[0].nama_menu ?? null,
+                                nama_modul: response.data[0].nama_modul ?? null,
+                                path: response.data[0].path ?? null,
                                 deskripsi: response.data[0].deskripsi ?? null,
                                 order: response.data[0].order ?? null,
                                 icon: response.data[0].icon ?? null
@@ -73,19 +79,19 @@ export default function EditMenu() {
         };
 
         useEffect(() => {
-                if (id_master_menu != '') {
+                if (id_master_modul != '') {
                         fetchData();
                 }
-        }, [id_master_menu]);
+        }, [id_master_modul]);
 
         return (
                 <>
-                        <PageTitle title="Edit Menu" />
+                        <PageTitle title="Edit Sub Menu" />
                         <div className="container-fixed">
                                 <div className="flex flex-wrap items-center justify-between gap-5 pb-7.5">
                                         <div className="flex flex-col justify-center gap-2">
-                                                <h1 className="text-xl font-semibold text-gray-900">Edit Menu</h1>
-                                                <Link className="btn btn-sm btn-light" to={`/create_menu/${id_master_aplikasi}`}>
+                                                <h1 className="text-xl font-semibold text-gray-900">Edit Sub Menu</h1>
+                                                <Link className="btn btn-sm btn-light" to={`/create_sub_menu/${id_master_aplikasi}/${id_master_menu}`}>
                                                         <i className="ki-filled ki-black-left-line"></i>
                                                         <div>
                                                                 Kembali
@@ -98,9 +104,16 @@ export default function EditMenu() {
                                                 <form onSubmit={handleSubmit}>
                                                         <div className="card-body grid gap-5">
                                                                 <InputText
-                                                                        label='Nama Menu'
-                                                                        name='nama_menu'
-                                                                        value={data.nama_menu}
+                                                                        label='Nama Modul'
+                                                                        name='nama_modul'
+                                                                        value={data.nama_modul}
+                                                                        onChange={handleChange}
+                                                                        required
+                                                                />
+                                                                <InputText
+                                                                        label='Path'
+                                                                        name='path'
+                                                                        value={data.path}
                                                                         onChange={handleChange}
                                                                         required
                                                                 />

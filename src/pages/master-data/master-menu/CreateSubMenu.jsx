@@ -155,7 +155,7 @@ export default function CreateSubMenu() {
                         name: 'Aksi',
                         cell: row =>
                                 <div className="flex gap-3">
-                                        {/* <button className="btn btn-sm btn-warning">Edit</button> */}
+                                        <Link to={`/edit_sub_menu/${id_master_aplikasi}/${id_master_menu}/${row.id_master_modul}`} className="btn btn-sm btn-warning">Edit</Link>
                                         <button
                                                 className="btn btn-sm btn-danger"
                                                 onClick={() => handleDelete(row.id_master_modul)}>Hapus</button>
@@ -171,7 +171,7 @@ export default function CreateSubMenu() {
                                 <div className="flex flex-wrap items-center justify-between gap-5 pb-7.5">
                                         <div className="flex flex-col justify-center gap-2">
                                                 <h1 className="text-xl font-semibold text-gray-900">Master Modul</h1>
-                                                <Link className="btn btn-sm btn-light" to={`/create_menu/${data.id_master_menu}`}>
+                                                <Link className="btn btn-sm btn-light" to={`/create_menu/${id_master_aplikasi}`}>
                                                         <i className="ki-filled ki-black-left-line"></i>
                                                         <div>
                                                                 Kembali
