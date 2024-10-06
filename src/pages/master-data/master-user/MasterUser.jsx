@@ -95,18 +95,22 @@ export default function MasterUser() {
                         selector: row => row.no_hp,
                 },
                 {
-                        name: 'Avatar',
-                        selector: row => row.avatar,
+                        name: 'Jenis User',
+                        selector: row => row.jenis_user,
                 },
                 {
-                        name: 'Edit',
-                        cell: row => <Link to={`/edit-user/${row.id_user}`} className="btn btn-sm btn-warning">Edit</Link>,
-                },
-                {
-                        name: 'Hapus',
-                        cell: row => <button
-                                className="btn btn-sm btn-danger"
-                                onClick={() => handleDelete(row.id_user)}>Hapus</button>,
+                        name: 'Aksi',
+                        cell: row =>
+                                <div className="flex gap-3">
+                                        <div>
+                                                <Link to={`/edit_user/${row.id_user}`} className="btn btn-sm btn-warning">Edit</Link>
+                                        </div>
+                                        <div>
+                                                <button
+                                                        className="btn btn-sm btn-danger"
+                                                        onClick={() => handleDelete(row.id_user)}>Hapus</button>
+                                        </div>
+                                </div>
                 },
         ];
 
@@ -128,7 +132,7 @@ export default function MasterUser() {
                                                 {/* <a className="btn btn-sm btn-light" href="#">
                                                         Import Data
                                                 </a> */}
-                                                <Link className="btn btn-sm btn-primary" to="/create-user">
+                                                <Link className="btn btn-sm btn-primary" to="/create_user">
                                                         Tambah User
                                                 </Link>
                                         </div>

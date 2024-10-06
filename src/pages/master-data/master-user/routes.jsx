@@ -12,7 +12,7 @@ const masterUserRoutes = [
                 element: <CreateUser />
         },
         {
-                path: '/edit-user/:id_user',
+                path: '/edit_user/:id_user',
                 element: <EditUser />
         }
 ];

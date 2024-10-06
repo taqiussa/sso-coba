@@ -25,13 +25,25 @@ export default function EditUser() {
 
         const handleChange = (e) => {
                 const { name, value, type, files } = e.target;
+                const maxSize = 500 * 1024;
+
                 if (type === 'file') {
                         if (files && files[0]) {
+                                const file = files[0];
+
+                                if (file.size > maxSize) {
+                                        showAlert({ icon: 'error', title: 'Max. Size', text: 'File size exceeds the 500KB limit.' });
+                                        return;
+                                }
+
                                 setData({
                                         ...data,
-                                        [name]: files[0],
+                                        [name]: file,
                                 });
-                                setPreviewImage(URL.createObjectURL(files[0]));
+
+                                console.log(data);
+
+                                setPreviewImage(URL.createObjectURL(file));
                         } else {
                                 console.log("No file selected or file input is empty");
                         }
@@ -135,18 +147,6 @@ export default function EditUser() {
                                                 </div>
                                                 <form onSubmit={handleSubmit}>
                                                         <div className="card-body grid gap-5">
-                                                                <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
-                                                                        <label className="form-label max-w-56">
-                                                                                Photo
-                                                                        </label>
-                                                                        <div className="flex items-center justify-between flex-wrap grow gap-2.5">
-                                                                                <span className="text-2sm font-medium text-gray-600">
-                                                                                        150x150px JPEG, PNG Image
-                                                                                </span>
-                                                                                <input type='file' name='avatar' onChange={handleChange} />
-                                                                                <img src={previewImage} className='size-16 image-input-placeholder rounded-full border-2 border-success image-input-empty:border-gray-300' />
-                                                                        </div>
-                                                                </div>
                                                                 <InputText
                                                                         label='Nama Lengkap'
                                                                         name='nama_lengkap'
@@ -183,6 +183,18 @@ export default function EditUser() {
                                                                         onChange={handleChange}
                                                                         required={true}
                                                                 />
+                                                                <div className="flex items-baseline flex-wrap lg:flex-nowrap gap-2.5">
+                                                                        <label className="form-label max-w-56">
+                                                                                Photo
+                                                                        </label>
+                                                                        <div className="flex items-center justify-between flex-wrap grow gap-2.5">
+                                                                                <span className="text-2sm font-medium text-gray-600">
+                                                                                        150x150px JPEG, PNG Image
+                                                                                </span>
+                                                                                <input type='file' name='avatar' onChange={handleChange} />
+                                                                                <img src={previewImage} className='size-16 image-input-placeholder rounded-full border-2 border-success image-input-empty:border-gray-300' />
+                                                                        </div>
+                                                                </div>
                                                                 <div className="flex justify-end gap-2">
                                                                         <Link className="btn btn-secondary" to="/master_user">
                                                                                 Batal
