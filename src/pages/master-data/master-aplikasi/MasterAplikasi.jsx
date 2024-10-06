@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { deleteData, getData } from '@/functions/api/api';
 import PageTitle from '@/layouts/partials/PageTitle';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { showAlert } from '@/functions/alert/showAlert';
 import Loading from '@/components/Loading';
 
 export default function MasterAplikasi() {
+        const location = useLocation();
         const [dataTable, setDataTable] = useState([]);
         const [data, setData] = useState({
                 limit: 10,
@@ -80,45 +81,68 @@ export default function MasterAplikasi() {
                 }
         };
 
-        const columns = [
-                {
-                        name: 'Nama Aplikasi',
-                        selector: row => row.nama_aplikasi,
-                        sortable: true,
-                },
-                {
-                        name: 'Deskripsi',
-                        selector: row => row.deskripsi,
-                        sortable: true,
-                },
-                {
-                        name: 'image',
-                        selector: row => row.image,
-                        sortable: true,
-                },
-                {
-                        name: 'URL',
-                        selector: row => row.url,
-                },
-                {
-                        name: 'Versi',
-                        selector: row => row.versi_aplikasi,
-                },
-                {
-                        name: 'Aksi',
-                        cell: row =>
-                                <div className='gap-5 flex items-center justify-center'>
-                                        <div>
-                                                <Link to={`/edit_aplikasi/${row.id_master_aplikasi}`} className="btn btn-sm btn-warning">Edit</Link>
+        const columns = () => {
+                let column = [
+                        {
+                                name: 'Nama Aplikasi',
+                                selector: row => row.nama_aplikasi,
+                                sortable: true,
+                        },
+                        {
+                                name: 'Deskripsi',
+                                selector: row => row.deskripsi,
+                                sortable: true,
+                        },
+                        {
+                                name: 'image',
+                                selector: row => row.image,
+                                sortable: true,
+                        },
+                        {
+                                name: 'URL',
+                                selector: row => row.url,
+                        },
+                        {
+                                name: 'Versi',
+                                selector: row => row.versi_aplikasi,
+                        },
+                        {
+                                name: 'Aksi',
+                                cell: row =>
+                                        <div className='gap-5 flex items-center justify-center'>
+                                                <div>
+                                                        <Link to={`/edit_aplikasi/${row.id_master_aplikasi}`} className="btn btn-sm btn-warning">Edit</Link>
+                                                </div>
+                                                <div>
+                                                        <button
+                                                                className="btn btn-sm btn-danger"
+                                                                onClick={() => handleDelete(row.id_master_aplikasi)}>Hapus</button>
+                                                </div>
                                         </div>
-                                        <div>
-                                                <button
-                                                        className="btn btn-sm btn-danger"
-                                                        onClick={() => handleDelete(row.id_master_aplikasi)}>Hapus</button>
-                                        </div>
-                                </div>
-                },
-        ];
+                        },
+                ];
+
+                if (location.pathname.includes('master_menu')) {
+                        column = [
+                                {
+                                        name: 'Menu',
+                                        cell: row => <Link to={`/create_menu`} children='Menu' className='btn btn-info' />
+                                },
+                                ...column
+                        ]
+                } else if(location.pathname.includes('master_group'))
+                {
+                        column = [
+                                {
+                                        name: 'Set Akses',
+                                        cell: row => <Link to={`/set_akses_group/${row.id_master_aplikas}`} className='btn btn-info' children='Set Akses' />
+                                },
+                                ...column
+                        ]
+                }
+
+                return column;
+        }
 
         return (
                 <>
@@ -150,7 +174,7 @@ export default function MasterAplikasi() {
                                                                         <i className="ki-filled ki-magnifier"></i>
                                                                         <input
                                                                                 name="filter"
-                                                                                placeholder="Search users"
+                                                                                placeholder="Search apps"
                                                                                 type="text"
                                                                                 value={data.filter}
                                                                                 onChange={handleChange}
@@ -160,7 +184,7 @@ export default function MasterAplikasi() {
                                                 </div>
                                                 <div className="card-body">
                                                         <DataTable
-                                                                columns={columns}
+                                                                columns={columns()}
                                                                 data={dataTable ?? []}
                                                                 progressPending={isLoading}
                                                                 progressComponent={<Loading />}
