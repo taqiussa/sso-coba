@@ -3,7 +3,7 @@ import { showAlert } from '@/functions/alert/showAlert';
 import { getData, updateData } from '@/functions/api/api';
 import PageTitle from '@/layouts/partials/PageTitle'
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 export default function EditAplikasi() {
         const { id_master_aplikasi } = useParams();
@@ -30,10 +30,13 @@ export default function EditAplikasi() {
                                         nama_aplikasi: response.data[0].nama_aplikasi ?? '',
                                         deskripsi: response.data[0].deskripsi ?? '',
                                         url: response.data[0].url ?? '',
-                                        tgl_version: response.data[0].tgl_version ?? '',
+                                        tgl_version: response.data[0].tgl_version ? response.data[0].tgl_version.split('T')[0] : '',
                                         versi_aplikasi: response.data[0].versi_aplikasi ?? '',
                                         image: response.data[0].image ?? ''
                                 })
+                                if (response.data[0].image) {
+                                        setPreviewImage(response.data[0].image)
+                                }
                         } else {
                                 console.error("Failed to fetch menu: ", response.message);
                         }
@@ -119,7 +122,7 @@ export default function EditAplikasi() {
                                         <div className="card pb-2.5">
                                                 <div className="card-header" id="basic_settings">
                                                         <h3 className="card-title">
-                                                                Tambah Aplikasi
+                                                                Edit Aplikasi
                                                         </h3>
                                                 </div>
                                                 <div className="card-body grid gap-5">
@@ -177,7 +180,7 @@ export default function EditAplikasi() {
                                                                         to='/master_aplikasi'
                                                                         children='Batal'
                                                                 />
-                                                                
+
                                                                 <button className="btn btn-primary" onClick={handleSubmit}>
                                                                         Simpan
                                                                         {
