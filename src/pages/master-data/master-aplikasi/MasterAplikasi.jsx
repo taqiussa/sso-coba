@@ -113,7 +113,7 @@ export default function MasterAplikasi() {
                         column = [
                                 {
                                         name: 'Menu',
-                                        cell: row => <Link to={`/create_menu`} children='Menu' className='btn btn-info' />
+                                        cell: row => <Link to={`/create_menu/${row.id_master_aplikasi}`} children='Menu' className='btn btn-info btn-sm' />
                                 },
                                 ...column
                         ]
