@@ -106,20 +106,7 @@ export default function MasterAplikasi() {
                                 name: 'Versi',
                                 selector: row => row.versi_aplikasi,
                         },
-                        {
-                                name: 'Aksi',
-                                cell: row =>
-                                        <div className='gap-5 flex items-center justify-center'>
-                                                <div>
-                                                        <Link to={`/edit_aplikasi/${row.id_master_aplikasi}`} className="btn btn-sm btn-warning">Edit</Link>
-                                                </div>
-                                                <div>
-                                                        <button
-                                                                className="btn btn-sm btn-danger"
-                                                                onClick={() => handleDelete(row.id_master_aplikasi)}>Hapus</button>
-                                                </div>
-                                        </div>
-                        },
+
                 ];
 
                 if (location.pathname.includes('master_menu')) {
@@ -131,26 +118,55 @@ export default function MasterAplikasi() {
                                 ...column
                         ]
                 }
+                else if (location.pathname.includes('master_aplikasi')) {
+                        column = [
+                                ...column,
+                                {
+                                        name: 'Aksi',
+                                        cell: row =>
+                                                <div className='gap-5 flex items-center justify-center'>
+                                                        <div>
+                                                                <Link to={`/edit_aplikasi/${row.id_master_aplikasi}`} className="btn btn-sm btn-warning">Edit</Link>
+                                                        </div>
+                                                        <div>
+                                                                <button
+                                                                        className="btn btn-sm btn-danger"
+                                                                        onClick={() => handleDelete(row.id_master_aplikasi)}>Hapus</button>
+                                                        </div>
+                                                </div>
+                                },
+                        ]
+                }
 
                 return column;
         }
 
         return (
                 <>
-                        <PageTitle title="Master Aplikasi" />
+                        {
+                                location.pathname.includes('master_aplikasi') ?
+                                        <PageTitle title="Master Aplikasi" />
+                                        :
+                                        <PageTitle title="Master Menu" />
+                        }
                         <div className="container-fixed">
                                 <div className="flex flex-wrap items-center justify-between gap-5 pb-7.5">
                                         <div className="flex flex-col justify-center gap-2">
-                                                <h1 className="text-xl font-semibold text-gray-900">Master Aplikasi</h1>
+                                                {
+                                                        location.pathname.includes('master_aplikasi') ?
+                                                                <h1 className="text-xl font-semibold text-gray-900">Master Aplikasi</h1>
+                                                                :
+                                                                <h1 className="text-xl font-semibold text-gray-900">Master Menu</h1>
+                                                }
                                         </div>
-                                        <div className="flex items-center gap-2.5">
-                                                {/* <a className="btn btn-sm btn-light" href="#">
-                                                        Import Data
-                                                </a> */}
-                                                <Link className="btn btn-sm btn-primary" to="/create_aplikasi">
-                                                        Tambah Aplikasi
-                                                </Link>
-                                        </div>
+                                        {
+                                                location.pathname.includes('master_aplikasi') &&
+                                                <div className="flex items-center gap-2.5">
+                                                        <Link className="btn btn-sm btn-primary" to="/create_aplikasi">
+                                                                Tambah Aplikasi
+                                                        </Link>
+                                                </div>
+                                        }
                                 </div>
                         </div>
                         <div className="container-fixed">
