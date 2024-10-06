@@ -73,16 +73,16 @@ export default function Dashboard() {
                                 <div className="md:grid md:grid-cols-3 gap-5 w-full lg:gap-7.5">
                                         {Object.entries(data).map(([category, items]) => (
                                                 <div className="card">
-                                                        <h3 className="font-bold text-lg p-2 border-b border-gray-300 text-center">
+                                                        <h3 className="font-bold text-lg p-2 border-b border-gray-300 text-gray-700 text-center">
                                                                 {category}
                                                         </h3>
-                                                        <div className="card-body">
+                                                        <div className="card-body flex justify-center">
                                                                 <img src="/logo.png" className="size-32" />
                                                         </div>
-                                                        <div className="text-center text-gray-500">{items[0].deskripsi}</div>
+                                                        <div className="text-center flex justify-center text-gray-600">{items[0].deskripsi}</div>
                                                         {
                                                                 items.map(app =>(
-                                                                        <div className="capitalize">{app.nama_group}</div>
+                                                                        <div className="capitalize text-center text-gray-500">{app.nama_group}</div>
                                                                 ))
                                                         }
                                                 </div>
