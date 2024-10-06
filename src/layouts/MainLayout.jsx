@@ -14,6 +14,7 @@ export default function MainLayout({ children }) {
         const [loading, setLoading] = useState(false);
         const [menus, setMenus] = useState({});
         const { user, logout } = useContext(UserContext);
+        const [apps, setApps] = useState({});
 
         const fetchMenu = async () => {
                 if (!user) return;
@@ -32,6 +33,21 @@ export default function MainLayout({ children }) {
                 }
         };
 
+        const fetchApps = async () => {
+                if (!user) return;
+
+                try {
+                        const response = await getData(`groupakses/userapps/${user.id_user}`);
+                        if (response?.success) {
+                                setApps(response.data?.apps);
+                        } else {
+                                console.error("Failed to fetch apps: ", response.message);
+                        }
+                } catch (error) {
+                        console.error("Error fetching menu: ", error);
+                }
+        };
+
         const handleLogout = () => {
                 logout();
                 navigate('/login');
@@ -41,7 +57,7 @@ export default function MainLayout({ children }) {
                 KTComponent.init();
                 KTLayout.init();
                 fetchMenu();
-
+                fetchApps();
                 // return () => {
                 // };
         }, [user]);
@@ -49,7 +65,7 @@ export default function MainLayout({ children }) {
         return (
                 <>
                         <div className="block lg:hidden">
-                                <ResponsiveSidebar open={open} setOpen={setOpen} menus={menus}/>
+                                <ResponsiveSidebar open={open} setOpen={setOpen} menus={menus} />
                         </div>
                         <div className="flex">
                                 <aside className="z-20 hidden h-full py-10 overflow-y-auto bg-white lg:fixed lg:block lg:w-80">
@@ -58,7 +74,7 @@ export default function MainLayout({ children }) {
                                 <div className="flex-1 w-full overflow-y-auto lg:ml-80">
                                         {
                                                 user &&
-                                                <Header setOpen={setOpen} user={user} logout={handleLogout} loading={loading} />
+                                                <Header setOpen={setOpen} user={user} logout={handleLogout} loading={loading} apps={apps ?? []} />
                                         }
                                         <main className="min-h-screen px-3 py-16">
                                                 {children}
