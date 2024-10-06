@@ -16,6 +16,8 @@ export default function SetAksesGroup() {
                 filter: '',
         });
 
+        const [idGroupAkses, setIdGroupAkses] = useState(null);
+        const [idMasterModul, setIdMasterModul] = useState(null);
         const [dataTable, setDataTable] = useState([]);
         const [totalData, setTotalData] = useState(0);
         const [loading, setLoading] = useState(false);
@@ -33,14 +35,10 @@ export default function SetAksesGroup() {
         const handleDelete = async (e, id_group_akses) => {
                 e.preventDefault();
                 setLoading(true);
+                setIdGroupAkses(id_group_akses);
                 try {
                         const response = await deleteData(`groupakses/${id_group_akses}`);
                         if (response.success === true) {
-                                // showAlert({
-                                //         icon: 'success',
-                                //         title: 'Success!',
-                                //         text: 'Group created successfully.'
-                                // });
                                 fetchData();
                         } else {
                                 showAlert({
@@ -59,20 +57,17 @@ export default function SetAksesGroup() {
                         });
                 } finally {
                         setLoading(false);
+                        setIdGroupAkses(null);
                 }
         };
 
         const handleSubmit = async (e, id_master_modul) => {
                 e.preventDefault();
+                setIdMasterModul(id_master_modul);
                 setLoading(true);
                 try {
                         const response = await postData('groupakses', { id_master_aplikasi, id_master_group, id_master_modul });
                         if (response.success === true) {
-                                // showAlert({
-                                //         icon: 'success',
-                                //         title: 'Success!',
-                                //         text: 'Group created successfully.'
-                                // });
                                 fetchData();
                         } else {
                                 showAlert({
@@ -90,14 +85,13 @@ export default function SetAksesGroup() {
                                 text: 'An unexpected error occurred. Please try again.'
                         });
                 } finally {
+                        setIdMasterModul(null);
                         setLoading(false);
                 }
         };
 
-
-
         const fetchData = async () => {
-                setIsLoading(true);
+                // setIsLoading(true);
                 try {
                         const response = await getData(`mstgroupakses/modul/${id_master_aplikasi}/${id_master_group}?${queryURL(dataQuery)}`);
                         setDataTable(response.data.data);
@@ -128,9 +122,21 @@ export default function SetAksesGroup() {
                         name: 'Pilih',
                         selector: row =>
                                 row.id_group_akses ?
-                                        <button className='btn btn-success' children='ON' onClick={(e) => handleDelete(e, row.id_group_akses)} />
+                                        <button
+                                                className='btn btn-success'
+                                                onClick={(e) => handleDelete(e, row.id_group_akses)} >
+                                                ON {
+                                                        loading && row.id_group_akses === idGroupAkses &&
+                                                        <i class="ki-filled ki-arrows-circle animate-spin"></i>
+                                                }
+                                        </button>
                                         :
-                                        <button className='btn btn-danger' children='OFF' onClick={(e) => handleSubmit(e, row.id_master_modul)} />
+                                        <button className='btn btn-danger' onClick={(e) => handleSubmit(e, row.id_master_modul)} >
+                                                OFF {
+                                                        loading && row.id_master_modul === idMasterModul &&
+                                                        <i class="ki-filled ki-arrows-circle animate-spin"></i>
+                                                }
+                                        </button>
 
                 },
                 {
@@ -143,11 +149,6 @@ export default function SetAksesGroup() {
                         selector: row => row.nama_modul,
                         sortable: true,
                 },
-                {
-                        name: 'id group akses',
-                        selector: row => row.id_group_akses,
-                        sortable: true,
-                },
         ];
 
         return (
@@ -157,7 +158,7 @@ export default function SetAksesGroup() {
                                 <div className="flex flex-wrap items-center justify-between gap-5 pb-7.5">
                                         <div className="flex flex-col justify-center gap-2">
                                                 <h1 className="text-xl font-semibold text-gray-900">Set Akses Group</h1>
-                                                <Link className="btn btn-sm btn-light" to="/master_group">
+                                                <Link className="btn btn-sm btn-light" to={`/master_group/${id_master_aplikasi}`}>
                                                         <i className="ki-filled ki-black-left-line"></i>
                                                         <div>
                                                                 Kembali
@@ -187,8 +188,8 @@ export default function SetAksesGroup() {
                                                 <DataTable
                                                         columns={columns}
                                                         data={dataTable ?? []}
-                                                        progressPending={isLoading}
-                                                        progressComponent={<Loading />}
+                                                        // progressPending={isLoading}
+                                                        // progressComponent={<Loading />}
                                                         pagination
                                                         paginationServer
                                                         paginationTotalRows={totalData}

@@ -5,15 +5,13 @@ import PageTitle from '@/layouts/partials/PageTitle';
 import { showAlert } from '@/functions/alert/showAlert';
 import Loading from '@/components/Loading';
 import { queryURL } from '@/functions/utils/utils';
-import InputText from '@/components/InputText';
 import ListAplikasi from '@/components/ListAplikasi';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 export default function MasterGroup() {
+        const {id_master_aplikasi} = useParams();
         const [data, setData] = useState({
-                id_master_aplikasi: '',
-                nama_group: '',
-                deskripsi: '',
+                id_master_aplikasi: id_master_aplikasi ?? '',
         })
 
         const [dataQuery, setDataQuery] = useState({
@@ -25,28 +23,9 @@ export default function MasterGroup() {
 
         const [dataTable, setDataTable] = useState([]);
         const [totalData, setTotalData] = useState(0);
-        const [loading, setLoading] = useState(false);
         const [isLoading, setIsLoading] = useState(false);
-        const [loadingUpdate, setLoadingUpdate] = useState(false);
         const [debouncedFilter, setDebouncedFilter] = useState(dataQuery.filter);
         const [listAplikasi, setListAplikasi] = useState([]);
-        const [editingRow, setEditingRow] = useState(null);
-        const [editedData, setEditedData] = useState({});
-
-        const handleEditClick = (row) => {
-                console.log(row);
-                setEditingRow(row.id_master_group);
-                setEditedData(row);
-        };
-
-
-        const handleChangeEdit = (e) => {
-                setEditedData({
-                        ...editedData,
-                        [e.target.name]: e.target.value,
-                });
-        };
-
 
         const handleChange = (e) => {
                 setData({
@@ -60,39 +39,6 @@ export default function MasterGroup() {
                         ...dataQuery,
                         [e.target.name]: e.target.value,
                 });
-        };
-
-        const handleUpdate = async (e) => {
-                e.preventDefault();
-                setLoadingUpdate(true);
-                try {
-                        const response = await updateData(`mstgroupakses/${editingRow}`, editedData);
-                        if (response.success === true) {
-                                showAlert({
-                                        icon: 'success',
-                                        title: 'Success!',
-                                        text: 'Group created successfully.'
-                                });
-                                fetchData();
-                        } else {
-                                showAlert({
-                                        icon: 'error',
-                                        title: 'Error!',
-                                        text: Object.values(response.data)
-                                                .map(message => `- ${message}`)
-                                                .join('\n')
-                                });
-                        }
-                } catch (error) {
-                        showAlert({
-                                icon: 'error',
-                                title: 'Error!',
-                                text: 'An unexpected error occurred. Please try again.'
-                        });
-                } finally {
-                        setLoadingUpdate(false);
-                        setEditingRow(null);
-                }
         };
 
         const handleDelete = async (id_master_group) => {
@@ -121,40 +67,6 @@ export default function MasterGroup() {
                         },
                 });
         };
-
-        const handleSubmit = async (e) => {
-                e.preventDefault();
-                setLoading(true);
-                try {
-                        const response = await postData('mstgroupakses', data);
-                        if (response.success === true) {
-                                showAlert({
-                                        icon: 'success',
-                                        title: 'Success!',
-                                        text: 'Group created successfully.'
-                                });
-                                fetchData();
-                        } else {
-                                showAlert({
-                                        icon: 'error',
-                                        title: 'Error!',
-                                        text: Object.values(response.data)
-                                                .map(message => `- ${message}`)
-                                                .join('\n')
-                                });
-                        }
-                } catch (error) {
-                        showAlert({
-                                icon: 'error',
-                                title: 'Error!',
-                                text: 'An unexpected error occurred. Please try again.'
-                        });
-                } finally {
-                        setLoading(false);
-                }
-        };
-
-
 
         const fetchData = async () => {
                 setIsLoading(true);
@@ -210,61 +122,23 @@ export default function MasterGroup() {
                 },
                 {
                         name: 'Nama Group',
-                        selector: row => editingRow === row.id_master_group ? (
-                                <input
-                                        type="text"
-                                        name="nama_group"
-                                        value={editedData.nama_group || ''}
-                                        onChange={handleChangeEdit}
-                                        className="input"
-                                />
-                        ) : (
-                                row.nama_group
-                        ),
+                        selector: row => row.nama_group,
                         sortable: true,
                 },
                 {
                         name: 'Deskripsi',
-                        selector: row => editingRow === row.id_master_group ? (
-                                <input
-                                        type="text"
-                                        name="deskripsi"
-                                        value={editedData.deskripsi || ''}
-                                        onChange={handleChangeEdit}
-                                        className="input"
-                                />
-                        ) : (
-                                row.deskripsi
-                        ),
+                        selector: row => row.deskripsi,
                         sortable: true,
                 },
                 {
                         name: 'Aksi',
-                        cell: row => editingRow === row.id_master_group ? (
-                                <form onSubmit={handleUpdate} className="flex gap-3">
-                                        <div>
-                                                <button type='submit' className="btn btn-sm btn-success">
-                                                        Update
-                                                        {
-                                                                loadingUpdate &&
-                                                                <div className={`${loadingUpdate ? 'inline-flex' : 'hidden'}`}>
-                                                                        <i class="ki-filled ki-arrows-circle animate-spin"></i>
-                                                                </div>
-                                                        }
-                                                </button>
-                                        </div>
-                                        <div>
-                                                <button onClick={() => setEditingRow(null)} className="btn btn-sm btn-secondary">Batal</button>
-                                        </div>
-                                </form>
-                        ) : (
+                        cell: row =>
                                 <div className="flex gap-3">
-                                        <button onClick={() => handleEditClick(row)} className="btn btn-sm btn-warning">Edit</button>
+                                        {/* <button className="btn btn-sm btn-warning">Edit</button> */}
                                         <button
                                                 className="btn btn-sm btn-danger"
                                                 onClick={() => handleDelete(row.id_master_group)}>Hapus</button>
                                 </div>
-                        ),
                 },
         ];
 
@@ -279,42 +153,17 @@ export default function MasterGroup() {
                                 </div>
                                 <div className="card pb-2.5">
                                         <div className="grid gap-5 lg:gap-7.5">
-                                                <form onSubmit={handleSubmit}>
-                                                        <div className="card-body grid gap-5">
-                                                                <ListAplikasi
-                                                                        name='id_master_aplikasi'
-                                                                        value={data.id_master_aplikasi}
-                                                                        onChange={handleChange}
-                                                                        listAplikasi={listAplikasi}
-                                                                />
-
-                                                                <InputText
-                                                                        label='Nama Group'
-                                                                        name='nama_group'
-                                                                        value={data.nama_group}
-                                                                        onChange={handleChange}
-                                                                        required
-                                                                />
-                                                                <InputText
-                                                                        label='Deskripsi'
-                                                                        name='deskripsi'
-                                                                        value={data.deskripsi}
-                                                                        onChange={handleChange}
-                                                                        required
-                                                                />
-                                                                <div className="flex justify-end">
-                                                                        <button className="btn btn-primary">
-                                                                                Simpan
-                                                                                {
-                                                                                        loading &&
-                                                                                        <div className={`${loading ? 'inline-flex' : 'hidden'}`}>
-                                                                                                <i class="ki-filled ki-arrows-circle animate-spin"></i>
-                                                                                        </div>
-                                                                                }
-                                                                        </button>
-                                                                </div>
+                                                <div className="card-body grid gap-5">
+                                                        <ListAplikasi
+                                                                name='id_master_aplikasi'
+                                                                value={data.id_master_aplikasi}
+                                                                onChange={handleChange}
+                                                                listAplikasi={listAplikasi}
+                                                        />
+                                                        <div className="flex justify-end">
+                                                                <Link to={`/create_group/${data.id_master_aplikasi}`} className="btn btn-primary" children='Tambah Group' />
                                                         </div>
-                                                </form>
+                                                </div>
                                         </div>
                                 </div>
                                 <div className="card card-grid min-w-full mt-5">
