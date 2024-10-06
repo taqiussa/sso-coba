@@ -8,7 +8,7 @@ import { queryURL } from '@/functions/utils/utils';
 import InputText from '@/components/InputText';
 import { Link, useParams } from 'react-router-dom';
 
-export default function CreateMenu() {
+export default function EditMenu() {
         const { id_master_aplikasi } = useParams();
         const [data, setData] = useState({
                 id_master_aplikasi: id_master_aplikasi,
@@ -136,7 +136,7 @@ export default function CreateMenu() {
         const columns = [
                 {
                         name: 'Sub Menu',
-                        selector: row => <Link to={`/create_sub_menu/${data.id_master_aplikasi}/${row.id_master_menu}`} className='btn btn-sm btn-info' children='Sub Menu' />
+                        selector: row => <Link to={`/set_akses_group/${data.id_master_aplikasi}/${row.id_master_group}`} className='btn btn-sm btn-info' children='Sub Menu' />
                 },
                 {
                         name: 'Nama Menu',

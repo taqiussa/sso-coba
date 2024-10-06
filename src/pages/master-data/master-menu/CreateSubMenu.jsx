@@ -8,11 +8,13 @@ import { queryURL } from '@/functions/utils/utils';
 import InputText from '@/components/InputText';
 import { Link, useParams } from 'react-router-dom';
 
-export default function CreateMenu() {
-        const { id_master_aplikasi } = useParams();
+export default function CreateSubMenu() {
+        const { id_master_aplikasi, id_master_menu } = useParams();
         const [data, setData] = useState({
                 id_master_aplikasi: id_master_aplikasi,
-                nama_menu: '',
+                id_master_menu: id_master_menu,
+                nama_modul: '',
+                path: '',
                 deskripsi: '',
                 order: '',
                 icon: '',
@@ -45,19 +47,19 @@ export default function CreateMenu() {
                 });
         };
 
-        const handleDelete = async (id_master_menu) => {
+        const handleDelete = async (id_master_modul) => {
                 showAlert({
                         icon: 'warning',
                         title: 'Anda Yakin?',
-                        text: 'Menghapus Data Menu.',
+                        text: 'Menghapus Data Modul (Sub Menu).',
                         confirm: true,
                         onConfirm: async () => {
                                 try {
-                                        await deleteData(`mstmenu/${id_master_menu}`);
+                                        await deleteData(`mstmenu/modul/${id_master_modul}`);
                                         showAlert({
                                                 icon: 'success',
                                                 title: 'Success!',
-                                                text: 'Menu deleted successfully.'
+                                                text: 'Modul deleted successfully.'
                                         });
 
                                         fetchData();
@@ -65,7 +67,7 @@ export default function CreateMenu() {
                                         showAlert({
                                                 icon: 'error',
                                                 title: 'Error!',
-                                                text: 'Failed to delete menu.'
+                                                text: 'Failed to delete modul.'
                                         });
                                 }
                         },
@@ -76,12 +78,12 @@ export default function CreateMenu() {
                 e.preventDefault();
                 setLoading(true);
                 try {
-                        const response = await postData('mstmenu', data);
+                        const response = await postData('mstmenu/modul', data);
                         if (response.success === true) {
                                 showAlert({
                                         icon: 'success',
                                         title: 'Success!',
-                                        text: 'Menu created successfully.'
+                                        text: 'Modul created successfully.'
                                 });
                                 fetchData();
                         } else {
@@ -107,7 +109,7 @@ export default function CreateMenu() {
         const fetchData = async () => {
                 setIsLoading(true);
                 try {
-                        const response = await getData(`mstmenu/${data.id_master_aplikasi}?${queryURL(dataQuery)}`);
+                        const response = await getData(`mstmenu/modul/${data.id_master_menu}?${queryURL(dataQuery)}`);
                         setDataTable(response.data.data);
                         setTotalData(response.data.recordsTotal);
                 } catch (err) {
@@ -128,19 +130,20 @@ export default function CreateMenu() {
         }, [dataQuery.filter]);
 
         useEffect(() => {
-                if (data.id_master_aplikasi != '') {
+                if (data.id_master_menu != '') {
                         fetchData();
                 }
-        }, [data.id_master_aplikasi, dataQuery.limit, dataQuery.offset, dataQuery.order, debouncedFilter]);
+        }, [data.id_master_menu, dataQuery.limit, dataQuery.offset, dataQuery.order, debouncedFilter]);
 
         const columns = [
                 {
-                        name: 'Sub Menu',
-                        selector: row => <Link to={`/create_sub_menu/${data.id_master_aplikasi}/${row.id_master_menu}`} className='btn btn-sm btn-info' children='Sub Menu' />
+                        name: 'Nama Modul',
+                        selector: row => row.nama_modul,
+                        sortable: true,
                 },
                 {
-                        name: 'Nama Menu',
-                        selector: row => row.nama_menu,
+                        name: 'Path',
+                        selector: row => row.path,
                         sortable: true,
                 },
                 {
@@ -152,10 +155,10 @@ export default function CreateMenu() {
                         name: 'Aksi',
                         cell: row =>
                                 <div className="flex gap-3">
-                                        <button className="btn btn-sm btn-warning">Edit</button>
+                                        {/* <button className="btn btn-sm btn-warning">Edit</button> */}
                                         <button
                                                 className="btn btn-sm btn-danger"
-                                                onClick={() => handleDelete(row.id_master_menu)}>Hapus</button>
+                                                onClick={() => handleDelete(row.id_master_modul)}>Hapus</button>
                                 </div>
                         ,
                 },
@@ -163,12 +166,12 @@ export default function CreateMenu() {
 
         return (
                 <>
-                        <PageTitle title="Master Menu" />
+                        <PageTitle title="Master Modul" />
                         <div className="container-fixed">
                                 <div className="flex flex-wrap items-center justify-between gap-5 pb-7.5">
                                         <div className="flex flex-col justify-center gap-2">
-                                                <h1 className="text-xl font-semibold text-gray-900">Master Menu</h1>
-                                                <Link className="btn btn-sm btn-light" to="/master_menu">
+                                                <h1 className="text-xl font-semibold text-gray-900">Master Modul</h1>
+                                                <Link className="btn btn-sm btn-light" to={`/create_menu/${data.id_master_menu}`}>
                                                         <i className="ki-filled ki-black-left-line"></i>
                                                         <div>
                                                                 Kembali
@@ -181,9 +184,16 @@ export default function CreateMenu() {
                                                 <form onSubmit={handleSubmit}>
                                                         <div className="card-body grid gap-5">
                                                                 <InputText
-                                                                        label='Nama Menu'
-                                                                        name='nama_menu'
-                                                                        value={data.nama_menu}
+                                                                        label='Nama Modul'
+                                                                        name='nama_modul'
+                                                                        value={data.nama_modul}
+                                                                        onChange={handleChange}
+                                                                        required
+                                                                />
+                                                                <InputText
+                                                                        label='Path'
+                                                                        name='path'
+                                                                        value={data.path}
                                                                         onChange={handleChange}
                                                                         required
                                                                 />
