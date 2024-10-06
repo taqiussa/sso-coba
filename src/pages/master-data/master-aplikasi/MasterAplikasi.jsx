@@ -130,15 +130,6 @@ export default function MasterAplikasi() {
                                 },
                                 ...column
                         ]
-                } else if(location.pathname.includes('master_group'))
-                {
-                        column = [
-                                {
-                                        name: 'Set Akses',
-                                        cell: row => <Link to={`/set_akses_group/${row.id_master_aplikas}`} className='btn btn-info' children='Set Akses' />
-                                },
-                                ...column
-                        ]
                 }
 
                 return column;
