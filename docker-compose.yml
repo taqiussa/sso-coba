@@ -7,9 +7,9 @@ services:
     container_name: "sso"
     restart: always
     ports:
-      - "2024:5000" 
+      - "90:5000" 
     extra_hosts:
-      - "host.docker.internal:127.0.0.1"
+      - "host.docker.internal:172.17.0.1"
     volumes:
       - ./:/app 
       - /app/node_modules  
